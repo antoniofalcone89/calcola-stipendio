@@ -38,16 +38,16 @@ import { Delete as DeleteIcon, DeleteSweep as DeleteSweepIcon } from '@mui/icons
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#046A38',
-      light: '#0B8A4B',
+      main: '#953c00ff', // burnt orange
+      light: '#E67E22',
     },
     secondary: {
-      main: '#034D29',
-      light: '#058142',
+      main: '#8E4B10', // warm brown
+      light: '#B65C20',
     },
     background: {
-      default: '#FFFAF0',
-      paper: 'rgba(255, 255, 255, 0.9)',
+      default: '#FFF5E6', // warm cream
+      paper: 'rgba(255, 245, 230, 0.9)',
     },
   },
   components: {
@@ -55,27 +55,27 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 16,
-          boxShadow: '0 8px 32px rgba(4, 106, 56, 0.15)',
+          boxShadow: '0 8px 32px rgba(211, 84, 0, 0.15)',
           backdropFilter: 'blur(10px)',
-          backgroundColor: 'rgba(255, 255, 255, 0.85) !important',
-          border: '1px solid rgba(4, 106, 56, 0.2)',
+          backgroundColor: 'rgba(255, 245, 230, 0.85) !important',
+          border: '1px solid rgba(211, 84, 0, 0.2)',
         }
       }
     },
     MuiButton: {
       styleOverrides: {
         contained: {
-          background: 'linear-gradient(135deg, #046A38, #058142)',
+          background: 'linear-gradient(135deg, #D35400, #F39C12)',
           color: '#fff',
           fontWeight: 600,
           '&:hover': {
-            background: 'linear-gradient(135deg, #058142, #046A38)',
+            background: 'linear-gradient(135deg, #F39C12, #D35400)',
           }
         },
         text: {
-          color: '#046A38',
+          color: '#D35400',
           '&:hover': {
-            backgroundColor: 'rgba(4, 106, 56, 0.1)',
+            backgroundColor: 'rgba(211, 84, 0, 0.1)',
           }
         }
       }
@@ -85,24 +85,24 @@ const theme = createTheme({
         root: {
           '& .MuiOutlinedInput-root': {
             '& fieldset': {
-              borderColor: 'rgba(4, 106, 56, 0.3)',
+              borderColor: 'rgba(211, 84, 0, 0.3)',
             },
             '&:hover fieldset': {
-              borderColor: '#046A38',
+              borderColor: '#D35400',
             },
             '&.Mui-focused fieldset': {
-              borderColor: '#046A38',
+              borderColor: '#D35400',
             }
           },
           '& .MuiInputLabel-root': {
-            color: '#046A38',
+            color: '#D35400',
             '&.Mui-focused': {
-              color: '#046A38'
+              color: '#D35400'
             }
           },
           '& .MuiInputBase-input': {
             '&::placeholder': {
-              color: 'rgba(4, 106, 56, 0.7)',
+              color: 'rgba(211, 84, 0, 0.7)',
             }
           }
         }
@@ -112,7 +112,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           '&:hover': {
-            backgroundColor: 'rgba(4, 106, 56, 0.05) !important',
+            backgroundColor: 'rgba(211, 84, 0, 0.05) !important',
           }
         }
       }
@@ -120,9 +120,9 @@ const theme = createTheme({
     MuiIconButton: {
       styleOverrides: {
         root: {
-          color: '#046A38',
+          color: '#D35400',
           '&:hover': {
-            backgroundColor: 'rgba(4, 106, 56, 0.1)',
+            backgroundColor: 'rgba(211, 84, 0, 0.1)',
           }
         }
       }
@@ -262,8 +262,8 @@ function CalcolatoreStipendio() {
         minHeight: '100vh',
         padding: { xs: 2, sm: 3, md: 4 },
         backgroundImage: `
-          linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.1)),
-          url('/images/sunflower-bg.jpg')
+          linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.1)),
+          url('/images/autumn2.jpg')
         `,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
@@ -320,9 +320,9 @@ function CalcolatoreStipendio() {
                 onClick={salvaOreOggi}
                 sx={{ 
                   mt: 2,
-                  background: 'linear-gradient(135deg, #046A38, #058142)',
+                  background: 'linear-gradient(135deg, #953c00ff, #953c00ff)',
                   '&:hover': {
-                    background: 'linear-gradient(135deg, #058142, #046A38)',
+                    background: 'linear-gradient(135deg, #816205ff, #6a4f04ff)',
                   },
                   color: '#fff'
                 }}

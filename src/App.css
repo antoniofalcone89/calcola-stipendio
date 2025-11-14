@@ -53,11 +53,11 @@ body {
   text-transform: none !important;
   font-weight: 600 !important;
   border-radius: 8px !important;
-  background: linear-gradient(135deg, var(--primary-color), #046A38) !important;
+  background: linear-gradient(135deg, var(--primary-color), #046A38);
 }
 
 .MuiButton-contained:hover {
-  background: linear-gradient(135deg, #046A38, var(--primary-color)) !important;
+  background: linear-gradient(135deg, #046A38, var(--primary-color));
 }
 
 .MuiTableContainer-root {

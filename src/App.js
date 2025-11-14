@@ -5,8 +5,14 @@ import CalcolatoreStipendio from './components/CalcolatoreStipendio';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1976d2',
+      main: '#D35400',
     },
+    secondary: {
+      main: '#8E4B10',
+    },
+    background: {
+      default: '#FFF5E6',
+    }
   },
 });
 
