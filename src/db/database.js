@@ -21,12 +21,26 @@ export const loadOreLavorate = async () => {
 };
 
 export const savePagaOraria = async (pagaOraria) => {
+  try {
+    localStorage.setItem('pagaOraria', String(pagaOraria));
+  } catch (e) {
+    // Ignore localStorage errors and still persist to Dexie
+  }
   await db.settings.put({ id: 1, pagaOraria });
 };
 
 export const loadPagaOraria = async () => {
+  try {
+    const ls = localStorage.getItem('pagaOraria');
+    if (ls !== null) {
+      const val = parseFloat(ls);
+      if (Number.isFinite(val)) return val;
+    }
+  } catch (e) {
+    // Ignore localStorage errors and fallback to Dexie
+  }
   const settings = await db.settings.get(1);
-  return settings?.pagaOraria || 10;
+  return settings?.pagaOraria ?? 10;
 };
 
 export const deleteOreLavorate = async (date) => {

@@ -131,7 +131,11 @@ const theme = createTheme({
 });
 
 function CalcolatoreStipendio() {
-  const [pagaOraria, setPagaOraria] = useState(10);
+  const [pagaOraria, setPagaOraria] = useState(() => {
+    const stored = localStorage.getItem('pagaOraria');
+    const val = stored !== null ? parseFloat(stored) : NaN;
+    return Number.isFinite(val) ? val : 10;
+  });
   const [oreLavorate, setOreLavorate] = useState({});
   const [oreOggi, setOreOggi] = useState('');
   const [editingDate, setEditingDate] = useState(null);
