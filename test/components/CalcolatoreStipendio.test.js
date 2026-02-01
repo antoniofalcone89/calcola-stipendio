@@ -3,6 +3,20 @@ import userEvent from '@testing-library/user-event';
 import CalcolatoreStipendio from '../../src/components/CalcolatoreStipendio';
 import * as database from '../../src/db/database';
 
+// Mock Firebase
+jest.mock('firebase/auth', () => ({
+  signInWithPopup: jest.fn(),
+  signOut: jest.fn(),
+  onAuthStateChanged: jest.fn(),
+  getAuth: jest.fn(),
+  GoogleAuthProvider: jest.fn(),
+}));
+
+jest.mock('../../src/config/firebase', () => ({
+  auth: {},
+  googleProvider: {},
+}));
+
 jest.mock('../../src/db/database');
 jest.mock('../../src/hooks/usePagaOraria', () => ({
   usePagaOraria: jest.fn(() => [10, jest.fn()]),
@@ -13,6 +27,14 @@ jest.mock('../../src/hooks/useOreLavorate', () => ({
     saveHours: jest.fn().mockResolvedValue(),
     removeHours: jest.fn().mockResolvedValue(),
     removeAllHours: jest.fn().mockResolvedValue(),
+  })),
+}));
+jest.mock('../../src/contexts/AuthContext', () => ({
+  useAuth: jest.fn(() => ({
+    currentUser: { uid: 'test-user-id' },
+    signInWithGoogle: jest.fn(),
+    logout: jest.fn(),
+    loading: false,
   })),
 }));
 

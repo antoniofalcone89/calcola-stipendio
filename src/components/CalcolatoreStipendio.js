@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { Box, Paper, Typography, Grid, ThemeProvider } from "@mui/material";
+import { Box, Paper, Typography, Grid, ThemeProvider, IconButton, Tooltip } from "@mui/material";
+import { Logout as LogoutIcon } from "@mui/icons-material";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import { theme } from "../theme/theme";
+import { useAuth } from "../contexts/AuthContext";
 import { usePagaOraria } from "../hooks/usePagaOraria";
 import { useOreLavorate } from "../hooks/useOreLavorate";
 import { useWorkHoursForm, useEditDialog } from "../hooks/useWorkHoursForm";
@@ -19,6 +21,7 @@ import DeleteAllDialog from "./DeleteAllDialog";
  * Single Responsibility: Orchestrate all sub-components and manage high-level state
  */
 const CalcolatoreStipendio = () => {
+  const { logout } = useAuth();
   const [pagaOraria, setPagaOraria] = usePagaOraria();
   const { oreLavorate, saveHours, removeHours, removeAllHours } = useOreLavorate();
   
@@ -78,19 +81,40 @@ const CalcolatoreStipendio = () => {
           backgroundAttachment: "fixed",
         }}
       >
-        <Typography
-          variant="h4"
-          gutterBottom
+        <Box
           sx={{
-            textAlign: "center",
-            color: theme.palette.primary.main,
-            textShadow: "2px 2px 4px rgba(0,0,0,0.1)",
-            fontWeight: "bold",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
             mb: 4,
           }}
         >
-          Calcolatore Stipendio - {meseCorrente}
-        </Typography>
+          <Typography
+            variant="h4"
+            sx={{
+              color: theme.palette.primary.main,
+              textShadow: "2px 2px 4px rgba(0,0,0,0.1)",
+              fontWeight: "bold",
+              flex: 1,
+              textAlign: "center",
+            }}
+          >
+            Calcolatore Stipendio - {meseCorrente}
+          </Typography>
+          <Tooltip title="Esci">
+            <IconButton
+              onClick={logout}
+              sx={{
+                color: theme.palette.primary.main,
+                "&:hover": {
+                  backgroundColor: "rgba(211, 84, 0, 0.1)",
+                },
+              }}
+            >
+              <LogoutIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
 
         <Paper
           elevation={3}

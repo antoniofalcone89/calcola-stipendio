@@ -17,12 +17,20 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 22.14.0
+          cache: 'npm'
 
       - name: Installazione dipendenze
-        run: npm install
+        run: npm ci
 
       - name: Esecuzione test
         run: npm test -- --watchAll=false --coverage=false
+
+      - name: Upload node_modules come artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: node_modules
+          path: node_modules
+          retention-days: 1
 
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -36,9 +44,22 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 22.14.0
+          cache: 'npm'
 
-      - name: Installazione dipendenze
-        run: npm install
+      - name: Download node_modules da test job
+        uses: actions/download-artifact@v3
+        with:
+          name: node_modules
+          path: node_modules
+
+      - name: Verifica che le dipendenze siano complete
+        run: |
+          if [ ! -d "node_modules" ] || [ -z "$(ls -A node_modules 2>/dev/null)" ]; then
+            echo "node_modules vuoto o mancante, reinstallazione..."
+            npm ci
+          else
+            echo "✓ node_modules ripristinato correttamente dall'artifact (nessuna reinstallazione necessaria)"
+          fi
 
       - name: Build dell'app
         run: CI=false npm run build
