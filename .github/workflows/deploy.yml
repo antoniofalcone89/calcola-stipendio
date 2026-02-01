@@ -6,8 +6,27 @@ on:
       - main
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout del codice
+        uses: actions/checkout@v3
+
+      - name: Installazione Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.14.0
+
+      - name: Installazione dipendenze
+        run: npm install
+
+      - name: Esecuzione test
+        run: npm test -- --watchAll=false --coverage=false
+
   build-and-deploy:
     runs-on: ubuntu-latest
+    needs: test  # Esegue solo se i test passano
 
     steps:
       - name: Checkout del codice
@@ -18,10 +37,11 @@ jobs:
         with:
           node-version: 22.14.0
 
+      - name: Installazione dipendenze
+        run: npm install
+
       - name: Build dell'app
-        run: |
-          npm install
-          CI=false npm run build
+        run: CI=false npm run build
 
       - name: Copia file su VPS via SCP
         uses: appleboy/scp-action@master
