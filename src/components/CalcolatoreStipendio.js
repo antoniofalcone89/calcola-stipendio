@@ -41,15 +41,15 @@ import {
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#953c00ff", // burnt orange
+      main: "#953c00ff", 
       light: "#E67E22",
     },
     secondary: {
-      main: "#8E4B10", // warm brown
+      main: "#8E4B10", 
       light: "#B65C20",
     },
     background: {
-      default: "#FFF5E6", // warm cream
+      default: "#FFF5E6", 
       paper: "rgba(255, 245, 230, 0.9)",
     },
   },
@@ -68,7 +68,7 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         contained: {
-          background: "linear-gradient(135deg, #D35400, #F39C12)",
+          background: "linear-gradient(135deg,rgb(0, 211, 127),rgb(10, 142, 19))",
           color: "#fff",
           fontWeight: 600,
           "&:hover": {
@@ -88,7 +88,7 @@ const theme = createTheme({
         root: {
           "& .MuiOutlinedInput-root": {
             "& fieldset": {
-              borderColor: "rgba(211, 84, 0, 0.3)",
+              borderColor: "rgba(169, 65, 0, 0.7)",
             },
             "&:hover fieldset": {
               borderColor: "#D35400",
@@ -125,7 +125,7 @@ const theme = createTheme({
         root: {
           color: "#D35400",
           "&:hover": {
-            backgroundColor: "rgba(211, 84, 0, 0.1)",
+            backgroundColor: "rgba(0, 211, 116, 0.1)",
           },
         },
       },
@@ -271,8 +271,8 @@ function CalcolatoreStipendio() {
           minHeight: "100vh",
           padding: { xs: 2, sm: 3, md: 4 },
           backgroundImage: `
-          linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.1)),
-          url('${process.env.PUBLIC_URL}/images/autumn2.jpg')
+          linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1)),
+          url('${process.env.PUBLIC_URL}/images/3.webp')
         `,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -333,7 +333,7 @@ function CalcolatoreStipendio() {
                 onClick={salvaOreOggi}
                 sx={{
                   mt: 2,
-                  background: "linear-gradient(135deg, #953c00ff, #953c00ff)",
+                  background: "linear-gradient(135deg,rgb(211, 85, 0),rgb(195, 78, 0))",
                   "&:hover": {
                     background: "linear-gradient(135deg, #816205ff, #6a4f04ff)",
                   },
