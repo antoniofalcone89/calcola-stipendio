@@ -1,0 +1,34 @@
+name: Deploy Calcola Stipendio
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del codice
+        uses: actions/checkout@v3
+
+      - name: Installazione Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.14.0
+
+      - name: Build dell'app
+        run: |
+          npm install
+          npm run build
+
+      - name: Copia file su VPS via SCP
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "build/*"
+          target: "/var/www/calcola-stipendio"
+          strip_components: 1 # Rimuove la cartella "build/" e mette i file direttamente nel target
