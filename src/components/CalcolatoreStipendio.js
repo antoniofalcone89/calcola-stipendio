@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { Box, Paper, Typography, Grid, ThemeProvider, IconButton, Tooltip } from "@mui/material";
-import { Logout as LogoutIcon } from "@mui/icons-material";
+import { Box, Paper, Typography, Grid, ThemeProvider } from "@mui/material";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import { theme } from "../theme/theme";
-import { useAuth } from "../contexts/AuthContext";
 import { usePagaOraria } from "../hooks/usePagaOraria";
 import { useOreLavorate } from "../hooks/useOreLavorate";
 import { useWorkHoursForm, useEditDialog } from "../hooks/useWorkHoursForm";
@@ -15,13 +13,13 @@ import TotalSummary from "./TotalSummary";
 import EditHoursDialog from "./EditHoursDialog";
 import DeleteConfirmDialog from "./DeleteConfirmDialog";
 import DeleteAllDialog from "./DeleteAllDialog";
+import UserMenu from "./UserMenu";
 
 /**
  * Main component for salary calculator
  * Single Responsibility: Orchestrate all sub-components and manage high-level state
  */
 const CalcolatoreStipendio = () => {
-  const { logout } = useAuth();
   const [pagaOraria, setPagaOraria] = usePagaOraria();
   const { oreLavorate, saveHours, removeHours, removeAllHours } = useOreLavorate();
   
@@ -101,19 +99,7 @@ const CalcolatoreStipendio = () => {
           >
             Calcolatore Stipendio - {meseCorrente}
           </Typography>
-          <Tooltip title="Esci">
-            <IconButton
-              onClick={logout}
-              sx={{
-                color: theme.palette.primary.main,
-                "&:hover": {
-                  backgroundColor: "rgba(211, 84, 0, 0.1)",
-                },
-              }}
-            >
-              <LogoutIcon />
-            </IconButton>
-          </Tooltip>
+          <UserMenu />
         </Box>
 
         <Paper
