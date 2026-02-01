@@ -13,6 +13,7 @@ import TotalSummary from "./TotalSummary";
 import EditHoursDialog from "./EditHoursDialog";
 import DeleteConfirmDialog from "./DeleteConfirmDialog";
 import DeleteAllDialog from "./DeleteAllDialog";
+import UserMenu from "./UserMenu";
 
 /**
  * Main component for salary calculator
@@ -78,19 +79,28 @@ const CalcolatoreStipendio = () => {
           backgroundAttachment: "fixed",
         }}
       >
-        <Typography
-          variant="h4"
-          gutterBottom
+        <Box
           sx={{
-            textAlign: "center",
-            color: theme.palette.primary.main,
-            textShadow: "2px 2px 4px rgba(0,0,0,0.1)",
-            fontWeight: "bold",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
             mb: 4,
           }}
         >
-          Calcolatore Stipendio - {meseCorrente}
-        </Typography>
+          <Typography
+            variant="h4"
+            sx={{
+              color: theme.palette.primary.main,
+              textShadow: "2px 2px 4px rgba(0,0,0,0.1)",
+              fontWeight: "bold",
+              flex: 1,
+              textAlign: "center",
+            }}
+          >
+            Calcolatore Stipendio - {meseCorrente}
+          </Typography>
+          <UserMenu />
+        </Box>
 
         <Paper
           elevation={3}
