@@ -1,8 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+jest.mock('./components/CalcolatoreStipendio', () => {
+  return function MockCalcolatoreStipendio() {
+    return <div>Calcolatore Stipendio</div>;
+  };
+});
+
+test('renders Calcolatore Stipendio app', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  const titleElement = screen.getByText(/calcolatore stipendio/i);
+  expect(titleElement).toBeInTheDocument();
 });

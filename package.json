@@ -22,7 +22,10 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "npx jest --config=jest.config.js",
+    "test:watch": "npx jest --config=jest.config.js --watch",
+    "test:coverage": "npx jest --config=jest.config.js --coverage",
+    "test:react": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
