@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import CalcolatoreStipendio from '../../src/components/CalcolatoreStipendio';
-import * as database from '../../src/db/database';
+import * as database from '../../src/db/local-storage-manager';
 
 // Mock Firebase
 jest.mock('firebase/auth', () => ({
@@ -17,7 +17,7 @@ jest.mock('../../src/config/firebase', () => ({
   googleProvider: {},
 }));
 
-jest.mock('../../src/db/database');
+jest.mock('../../src/db/local-storage-manager');
 jest.mock('../../src/hooks/usePagaOraria', () => ({
   usePagaOraria: jest.fn(() => [10, jest.fn()]),
 }));

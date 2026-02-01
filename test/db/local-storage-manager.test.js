@@ -33,7 +33,7 @@ import {
   loadPagaOraria,
   deleteOreLavorate,
   deleteAllOreLavorate,
-} from '../../src/db/database';
+} from '../../src/db/local-storage-manager';
 
 describe('database', () => {
   beforeEach(() => {
