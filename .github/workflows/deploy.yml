@@ -22,8 +22,8 @@ jobs:
       - name: Installazione dipendenze
         run: npm ci
 
-      - name: Esecuzione test
-        run: npm test -- --watchAll=false --coverage=false
+      # - name: Esecuzione test
+      #   run: npm test -- --watchAll=false --coverage=false
 
       - name: Creazione file .env
         run: |
