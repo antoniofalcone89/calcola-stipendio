@@ -16,6 +16,12 @@ import DeleteAllDialog from "./DeleteAllDialog";
 import UserMenu from "./UserMenu";
 import { useAuth } from "../contexts/AuthContext";
 import { loadTotalsFS, saveTotalsFS } from "../db/firestore";
+// Import skeleton components
+import HeaderSkeleton from "./skeletons/HeaderSkeleton";
+import HourlyRateInputSkeleton from "./skeletons/HourlyRateInputSkeleton";
+import WorkHoursInputSkeleton from "./skeletons/WorkHoursInputSkeleton";
+import SummaryTableSkeleton from "./skeletons/SummaryTableSkeleton";
+import TotalSummarySkeleton from "./skeletons/TotalSummarySkeleton";
 
 /**
  * Main component for salary calculator
@@ -23,8 +29,8 @@ import { loadTotalsFS, saveTotalsFS } from "../db/firestore";
  */
 const CalcolatoreStipendio = () => {
   const { currentUser } = useAuth();
-  const [pagaOraria, setPagaOraria] = usePagaOraria();
-  const { oreLavorate, saveHours, removeHours, removeAllHours } = useOreLavorate();
+  const [pagaOraria, setPagaOraria, pagaLoading] = usePagaOraria();
+  const { oreLavorate, saveHours, removeHours, removeAllHours, oreLoading } = useOreLavorate();
   
   const {
     selectedDate,
@@ -47,19 +53,19 @@ const CalcolatoreStipendio = () => {
 
   const [deleteDate, setDeleteDate] = useState(null);
   const [showDeleteAllDialog, setShowDeleteAllDialog] = useState(false);
-
-  const meseCorrente = format(new Date(), "MMMM yyyy", { locale: it });
-
-  const totaleOre = Object.values(oreLavorate).reduce(
-    (acc, ore) => acc + ore,
-    0
-  );
-  const totaleStipendio = totaleOre * pagaOraria;
-
   const [storedTotaleOre, setStoredTotaleOre] = useState(0);
   const [storedTotaleStipendio, setStoredTotaleStipendio] = useState(0);
   const [totalsLoaded, setTotalsLoaded] = useState(false);
 
+  const meseCorrente = format(new Date(), "MMMM yyyy", { locale: it });
+
+  // Calculate totals with null safety
+  const totaleOre = pagaOraria !== null && oreLavorate !== null 
+    ? Object.values(oreLavorate).reduce((acc, ore) => acc + ore, 0)
+    : 0;
+  const totaleStipendio = totaleOre * (pagaOraria || 0);
+
+  // Load totals from Firestore
   useEffect(() => {
     const loadTotals = async () => {
       if (currentUser) {
@@ -74,14 +80,63 @@ const CalcolatoreStipendio = () => {
     loadTotals();
   }, [currentUser]);
 
+  // Save totals to Firestore
   useEffect(() => {
     const saveTotals = async () => {
-      if (currentUser) {
+      if (currentUser && pagaOraria !== null && oreLavorate !== null) {
         await saveTotalsFS(currentUser.uid, totaleOre, totaleStipendio);
       }
     };
     saveTotals();
-  }, [currentUser, totaleOre, totaleStipendio]);
+  }, [currentUser, totaleOre, totaleStipendio, pagaOraria, oreLavorate]);
+
+  // Show loading skeleton while data is loading
+  if (pagaLoading || oreLoading || pagaOraria === null || oreLavorate === null) {
+    return (
+      <ThemeProvider theme={theme}>
+        <Box
+          sx={{
+            minHeight: "100vh",
+            padding: { xs: 2, sm: 3, md: 4 },
+            backgroundImage: `
+            linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1)),
+            url('${process.env.PUBLIC_URL}/images/3.webp')
+          `,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            backgroundAttachment: "fixed",
+          }}
+        >
+          <HeaderSkeleton />
+          
+          <Paper
+            elevation={3}
+            sx={{ p: 4, mb: 3, backgroundColor: "rgba(255, 255, 255, 0.9)" }}
+          >
+            <Grid container spacing={3}>
+              <HourlyRateInputSkeleton />
+              <WorkHoursInputSkeleton />
+            </Grid>
+          </Paper>
+
+          <Paper
+            elevation={3}
+            sx={{ p: 4, mb: 3, backgroundColor: "rgba(255, 255, 255, 0.9)" }}
+          >
+            <SummaryTableSkeleton />
+          </Paper>
+
+          <Paper
+            elevation={3}
+            sx={{ p: 4, backgroundColor: "rgba(255, 255, 255, 0.9)" }}
+          >
+            <TotalSummarySkeleton />
+          </Paper>
+        </Box>
+      </ThemeProvider>
+    );
+  }
 
   const handleDelete = async (date) => {
     await removeHours(date);
