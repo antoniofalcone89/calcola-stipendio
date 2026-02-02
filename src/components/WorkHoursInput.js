@@ -23,7 +23,7 @@ const WorkHoursInput = ({
       />
       <TextField
         fullWidth
-        label="Ore lavorate (HH.mm)"
+        label="Ore lavorate"
         type="text"
         value={oreOggi}
         onChange={(e) => onHoursChange(e.target.value)}

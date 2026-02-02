@@ -81,7 +81,7 @@ describe('useWorkHoursForm', () => {
       await result.current.handleSave();
     });
 
-    expect(result.current.error).toBe('Formato ore non valido. Usa HH.mm (es: 08.30)');
+    expect(result.current.error).toBe("Formato ore non valido. Usa HH.mm oppure H (es: 08.30 oppure 8)");
     expect(mockOnSaveHours).not.toHaveBeenCalled();
   });
 
@@ -177,7 +177,7 @@ describe('useEditDialog', () => {
       await result.current.handleSaveEdit();
     });
 
-    expect(result.current.error).toBe('Formato ore non valido. Usa HH.mm (es: 08.30)');
+    expect(result.current.error).toBe('Formato ore non valido. Usa HH.mm oppure H (es: 08.30 oppure 8)');
     expect(mockOnSaveHours).not.toHaveBeenCalled();
   });
 

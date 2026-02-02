@@ -38,7 +38,7 @@ const EditHoursDialog = ({
         <TextField
           autoFocus
           margin="dense"
-          label="Ore lavorate (HH.mm)"
+          label="Ore lavorate"
           type="text"
           fullWidth
           value={editingHours}

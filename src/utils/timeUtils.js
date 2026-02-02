@@ -5,8 +5,14 @@
  */
 export const convertTimeToHours = (timeString) => {
   if (!timeString) return 0;
-  const [hours, minutes] = timeString.split(".").map(Number);
-  return hours + minutes / 60;
+  if (timeString.includes('.')) {
+    const [hoursStr, minutesStr] = timeString.split('.');
+    const hours = parseInt(hoursStr, 10);
+    const minutes = parseInt(minutesStr, 10);
+    return (Number.isFinite(hours) ? hours : 0) + (Number.isFinite(minutes) ? minutes : 0) / 60;
+  }
+  const hoursOnly = parseInt(timeString, 10);
+  return Number.isFinite(hoursOnly) ? hoursOnly : 0;
 };
 
 /**

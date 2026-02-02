@@ -3,6 +3,8 @@ import { format } from "date-fns";
 import { isValidTimeFormat } from "../utils/validationUtils";
 import { convertTimeToHours, formatTimeFromHours } from "../utils/timeUtils";
 
+const formatError = "Formato ore non valido. Usa HH.mm oppure H (es: 08.30 oppure 8)";
+
 /**
  * Custom hook for managing work hours form state and validation
  * Single Responsibility: Handle form state and validation logic
@@ -21,7 +23,7 @@ export const useWorkHoursForm = (onSaveHours) => {
     }
 
     if (!isValidTimeFormat(oreOggi)) {
-      setError("Formato ore non valido. Usa HH.mm (es: 08.30)");
+      setError(formatError);
       return;
     }
 
@@ -65,7 +67,7 @@ export const useEditDialog = (oreLavorate, onSaveHours) => {
     }
 
     if (!isValidTimeFormat(editingHours)) {
-      setError("Formato ore non valido. Usa HH.mm (es: 08.30)");
+      setError(formatError);
       return;
     }
 

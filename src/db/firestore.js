@@ -44,3 +44,21 @@ export const loadPagaOrariaFS = async (userId) => {
   }
   return 10;
 };
+
+export const saveTotalsFS = async (userId, totaleOre, totaleStipendio) => {
+  const userRef = doc(db, 'users', userId);
+  await setDoc(userRef, { totaleOre, totaleStipendio }, { merge: true });
+};
+
+export const loadTotalsFS = async (userId) => {
+  const userRef = doc(db, 'users', userId);
+  const docSnap = await getDoc(userRef);
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    return {
+      totaleOre: Number.isFinite(data.totaleOre) ? data.totaleOre : 0,
+      totaleStipendio: Number.isFinite(data.totaleStipendio) ? data.totaleStipendio : 0,
+    };
+  }
+  return { totaleOre: 0, totaleStipendio: 0 };
+};

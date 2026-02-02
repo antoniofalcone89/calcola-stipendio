@@ -18,6 +18,10 @@ jest.mock('../../src/config/firebase', () => ({
 }));
 
 jest.mock('../../src/db/local-storage-manager');
+jest.mock('../../src/db/firestore', () => ({
+  loadTotalsFS: jest.fn(async () => ({ totaleOre: 0, totaleStipendio: 0 })),
+  saveTotalsFS: jest.fn(async () => {}),
+}));
 jest.mock('../../src/hooks/usePagaOraria', () => ({
   usePagaOraria: jest.fn(() => [10, jest.fn()]),
 }));
