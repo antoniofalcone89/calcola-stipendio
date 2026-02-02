@@ -11,7 +11,7 @@ export const theme = createTheme({
       light: "#B65C20",
     },
     background: {
-      default: "#FFF5E6",
+      default: "#2c663d",
       paper: "rgba(255, 245, 230, 0.9)",
     },
   },
@@ -30,7 +30,8 @@ export const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         contained: {
-          background: "linear-gradient(135deg,rgb(0, 211, 127),rgb(10, 142, 19))",
+          background:
+            "linear-gradient(135deg,rgb(0, 211, 127),rgb(10, 142, 19))",
           color: "#fff",
           fontWeight: 600,
           "&:hover": {
