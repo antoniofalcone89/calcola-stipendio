@@ -16,6 +16,12 @@ import DeleteAllDialog from "./DeleteAllDialog";
 import UserMenu from "./UserMenu";
 import { useAuth } from "../contexts/AuthContext";
 import { loadTotalsFS, saveTotalsFS } from "../db/firestore";
+// Import skeleton components
+import HeaderSkeleton from "./skeletons/HeaderSkeleton";
+import HourlyRateInputSkeleton from "./skeletons/HourlyRateInputSkeleton";
+import WorkHoursInputSkeleton from "./skeletons/WorkHoursInputSkeleton";
+import SummaryTableSkeleton from "./skeletons/SummaryTableSkeleton";
+import TotalSummarySkeleton from "./skeletons/TotalSummarySkeleton";
 
 /**
  * Main component for salary calculator
@@ -88,9 +94,45 @@ const CalcolatoreStipendio = () => {
   if (pagaLoading || oreLoading || pagaOraria === null || oreLavorate === null) {
     return (
       <ThemeProvider theme={theme}>
-        <Box sx={{ minHeight: "100vh", padding: { xs: 2, sm: 3, md: 4 } }}>
-          {/* Loading skeleton here */}
-          <Typography variant="h4">Caricamento...</Typography>
+        <Box
+          sx={{
+            minHeight: "100vh",
+            padding: { xs: 2, sm: 3, md: 4 },
+            backgroundImage: `
+            linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1)),
+            url('${process.env.PUBLIC_URL}/images/3.webp')
+          `,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            backgroundAttachment: "fixed",
+          }}
+        >
+          <HeaderSkeleton />
+          
+          <Paper
+            elevation={3}
+            sx={{ p: 4, mb: 3, backgroundColor: "rgba(255, 255, 255, 0.9)" }}
+          >
+            <Grid container spacing={3}>
+              <HourlyRateInputSkeleton />
+              <WorkHoursInputSkeleton />
+            </Grid>
+          </Paper>
+
+          <Paper
+            elevation={3}
+            sx={{ p: 4, mb: 3, backgroundColor: "rgba(255, 255, 255, 0.9)" }}
+          >
+            <SummaryTableSkeleton />
+          </Paper>
+
+          <Paper
+            elevation={3}
+            sx={{ p: 4, backgroundColor: "rgba(255, 255, 255, 0.9)" }}
+          >
+            <TotalSummarySkeleton />
+          </Paper>
         </Box>
       </ThemeProvider>
     );
