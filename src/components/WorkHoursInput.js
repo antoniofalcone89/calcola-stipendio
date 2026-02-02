@@ -16,6 +16,7 @@ const WorkHoursInput = ({
     <Grid item xs={12} sm={6}>
       <TextField
         fullWidth
+        label="Dataaa"
         type="date"
         value={selectedDate}
         onChange={(e) => onDateChange(e.target.value)}

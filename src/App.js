@@ -1,7 +1,7 @@
-import { Container, CssBaseline, Box, CircularProgress } from '@mui/material';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import CalcolatoreStipendio from './components/CalcolatoreStipendio';
-import Login from './components/Login';
+import { Container, CssBaseline, Box, CircularProgress } from "@mui/material";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import CalcolatoreStipendio from "./components/CalcolatoreStipendio";
+import Login from "./components/Login";
 
 const AppContent = () => {
   const { currentUser, loading } = useAuth();
@@ -10,10 +10,10 @@ const AppContent = () => {
     return (
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '100vh',
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
         }}
       >
         <CircularProgress />

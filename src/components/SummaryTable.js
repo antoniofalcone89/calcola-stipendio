@@ -9,7 +9,11 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import { Edit as EditIcon, Delete as DeleteIcon, DeleteSweep as DeleteSweepIcon } from "@mui/icons-material";
+import {
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  DeleteSweep as DeleteSweepIcon,
+} from "@mui/icons-material";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import { formatTimeFromHours } from "../utils/timeUtils";
@@ -19,12 +23,7 @@ import { theme } from "../theme/theme";
  * Component for displaying the summary table of worked hours
  * Single Responsibility: Display and manage the list of worked hours
  */
-const SummaryTable = ({
-  oreLavorate,
-  onEdit,
-  onDelete,
-  onDeleteAll,
-}) => {
+const SummaryTable = ({ oreLavorate, onEdit, onDelete, onDeleteAll }) => {
   return (
     <Box>
       <Box
@@ -35,10 +34,7 @@ const SummaryTable = ({
           mb: 2,
         }}
       >
-        <Typography
-          variant="h6"
-          sx={{ color: theme.palette.secondary.main }}
-        >
+        <Typography variant="h6" sx={{ color: theme.palette.secondary.main }}>
           Riepilogo del mese
         </Typography>
         <IconButton
@@ -74,7 +70,10 @@ const SummaryTable = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {Object.entries(oreLavorate)
+            {(oreLavorate && typeof oreLavorate === "object"
+              ? Object.entries(oreLavorate)
+              : []
+            )
               .sort(([a], [b]) => new Date(a) - new Date(b))
               .map(([data, ore]) => (
                 <TableRow key={data}>

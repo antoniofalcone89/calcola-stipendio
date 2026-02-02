@@ -8,30 +8,31 @@ import { loadPagaOrariaFS, savePagaOrariaFS } from "../db/firestore";
  */
 export const usePagaOraria = () => {
   const { currentUser, loading: authLoading } = useAuth();
-  const [pagaOraria, setPagaOraria] = useState(null);
+  const [pagaOraria, setPagaOrariaState] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [hasChanged, setHasChanged] = useState(false);
   const loadedValueRef = useRef(null);
 
   // Load data when component mounts or user changes
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
-      
+
       if (currentUser) {
         try {
           const savedPagaOraria = await loadPagaOrariaFS(currentUser.uid);
-          setPagaOraria(savedPagaOraria);
-          loadedValueRef.current = savedPagaOraria;
+          setPagaOrariaState(savedPagaOraria ?? null);
+          loadedValueRef.current = savedPagaOraria ?? null;
         } catch (error) {
           console.error("Error loading pagaOraria from Firestore:", error);
-          setPagaOraria(null);
+          setPagaOrariaState(null);
           loadedValueRef.current = null;
         }
       } else {
-        setPagaOraria(null);
+        setPagaOrariaState(null);
         loadedValueRef.current = null;
       }
-      
+
       setLoading(false);
     };
 
@@ -40,24 +41,22 @@ export const usePagaOraria = () => {
     }
   }, [currentUser, authLoading]);
 
-  // Save pagaOraria when it changes
-  useEffect(() => {
-    if (loading || authLoading || !currentUser || pagaOraria === null) return;
+  const setPagaOraria = (value) => {
+    setPagaOrariaState(value);
+    setHasChanged(value !== loadedValueRef.current);
+  };
 
-    // Only save if the current value is different from the loaded value
-    if (pagaOraria !== loadedValueRef.current) {
-      const saveData = async () => {
-        try {
-          await savePagaOrariaFS(currentUser.uid, pagaOraria);
-          loadedValueRef.current = pagaOraria; // Update the ref after successful save
-        } catch (error) {
-          console.error("Error saving pagaOraria to Firestore:", error);
-        }
-      };
-      
-      saveData();
+  const savePagaOraria = async () => {
+    if (pagaOraria !== null) {
+      try {
+        await savePagaOrariaFS(currentUser.uid, pagaOraria);
+        loadedValueRef.current = pagaOraria;
+        setHasChanged(false);
+      } catch (error) {
+        console.error("Error saving pagaOraria to Firestore:", error);
+      }
     }
-  }, [pagaOraria, currentUser, loading, authLoading]);
+  };
 
-  return [pagaOraria, setPagaOraria, loading];
+  return { pagaOraria, setPagaOraria, savePagaOraria, loading, hasChanged };
 };

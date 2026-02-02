@@ -29,9 +29,16 @@ import TotalSummarySkeleton from "./skeletons/TotalSummarySkeleton";
  */
 const CalcolatoreStipendio = () => {
   const { currentUser } = useAuth();
-  const [pagaOraria, setPagaOraria, pagaLoading] = usePagaOraria();
-  const { oreLavorate, saveHours, removeHours, removeAllHours, oreLoading } = useOreLavorate();
-  
+  const {
+    pagaOraria,
+    setPagaOraria,
+    savePagaOraria,
+    loading: pagaLoading,
+    hasChanged,
+  } = usePagaOraria();
+  const { oreLavorate, saveHours, removeHours, removeAllHours, oreLoading } =
+    useOreLavorate();
+
   const {
     selectedDate,
     setSelectedDate,
@@ -60,20 +67,24 @@ const CalcolatoreStipendio = () => {
   const meseCorrente = format(new Date(), "MMMM yyyy", { locale: it });
 
   // Calculate totals with null safety
-  const totaleOre = pagaOraria !== null && oreLavorate !== null 
-    ? Object.values(oreLavorate).reduce((acc, ore) => acc + ore, 0)
-    : 0;
+  const totaleOre =
+    pagaOraria !== null && oreLavorate !== null
+      ? Object.values(oreLavorate).reduce((acc, ore) => acc + ore, 0)
+      : 0;
   const totaleStipendio = totaleOre * (pagaOraria || 0);
 
   // Load totals from Firestore
   useEffect(() => {
     const loadTotals = async () => {
-      if (currentUser) {
-        const t = await loadTotalsFS(currentUser.uid);
-        setStoredTotaleOre(t.totaleOre || 0);
-        setStoredTotaleStipendio(t.totaleStipendio || 0);
+      try {
+        if (currentUser) {
+          const t = await loadTotalsFS(currentUser.uid);
+          setStoredTotaleOre(t.totaleOre || 0);
+          setStoredTotaleStipendio(t.totaleStipendio || 0);
+        }
         setTotalsLoaded(true);
-      } else {
+      } catch (error) {
+        console.error("Error loading totals:", error);
         setTotalsLoaded(true);
       }
     };
@@ -81,17 +92,24 @@ const CalcolatoreStipendio = () => {
   }, [currentUser]);
 
   // Save totals to Firestore
-  useEffect(() => {
-    const saveTotals = async () => {
-      if (currentUser && pagaOraria !== null && oreLavorate !== null) {
+  const saveTotals = async () => {
+    if (currentUser) {
+      const totaleOre = oreLavorate
+        ? Object.values(oreLavorate).reduce((sum, ore) => sum + ore, 0)
+        : 0;
+      const totaleStipendio = totaleOre * (pagaOraria || 0);
+      try {
         await saveTotalsFS(currentUser.uid, totaleOre, totaleStipendio);
+        setStoredTotaleOre(totaleOre);
+        setStoredTotaleStipendio(totaleStipendio);
+      } catch (error) {
+        console.error("Error saving totals:", error);
       }
-    };
-    saveTotals();
-  }, [currentUser, totaleOre, totaleStipendio, pagaOraria, oreLavorate]);
+    }
+  };
 
   // Show loading skeleton while data is loading
-  if (pagaLoading || oreLoading || pagaOraria === null || oreLavorate === null) {
+  if (pagaLoading || oreLoading || !currentUser || !totalsLoaded) {
     return (
       <ThemeProvider theme={theme}>
         <Box
@@ -109,7 +127,7 @@ const CalcolatoreStipendio = () => {
           }}
         >
           <HeaderSkeleton />
-          
+
           <Paper
             elevation={3}
             sx={{ p: 4, mb: 3, backgroundColor: "rgba(255, 255, 255, 0.9)" }}
@@ -195,6 +213,11 @@ const CalcolatoreStipendio = () => {
             <HourlyRateInput
               pagaOraria={pagaOraria}
               onPagaOrariaChange={setPagaOraria}
+              onSave={async () => {
+                await savePagaOraria();
+                await saveTotals();
+              }}
+              disabled={!hasChanged}
             />
             <WorkHoursInput
               selectedDate={selectedDate}
@@ -224,8 +247,16 @@ const CalcolatoreStipendio = () => {
           sx={{ p: 4, backgroundColor: "rgba(255, 255, 255, 0.9)" }}
         >
           <TotalSummary
-            totaleOre={currentUser && totalsLoaded && totaleOre === 0 ? storedTotaleOre : totaleOre}
-            totaleStipendio={currentUser && totalsLoaded && totaleStipendio === 0 ? storedTotaleStipendio : totaleStipendio}
+            totaleOre={
+              currentUser && totalsLoaded && totaleOre === 0
+                ? storedTotaleOre
+                : totaleOre
+            }
+            totaleStipendio={
+              currentUser && totalsLoaded && totaleStipendio === 0
+                ? storedTotaleStipendio
+                : totaleStipendio
+            }
           />
         </Paper>
 
