@@ -25,11 +25,12 @@ jobs:
       - name: Esecuzione test
         run: npm test -- --watchAll=false --coverage=false
 
-      - name: Cache node_modules
+      - name: Cache node_modules per job successivo
         uses: actions/cache/save@v4
+        if: success()
         with:
           path: node_modules
-          key: node-modules-${{ hashFiles('package-lock.json') }}
+          key: node-modules-${{ github.run_id }}-${{ github.run_attempt }}
 
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -48,7 +49,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: node_modules
-          key: node-modules-${{ hashFiles('package-lock.json') }}
+          key: node-modules-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Creazione file .env
         run: |
@@ -58,8 +59,7 @@ jobs:
           echo "REACT_APP_FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}" >> .env
           echo "REACT_APP_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}" >> .env
           echo "REACT_APP_FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID }}" >> .env
-          echo "File .env creato:"
-          cat .env 
+          echo "env file created."
 
       - name: Build dell'app
         run: CI=false npm run build
