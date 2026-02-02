@@ -1,0 +1,11 @@
+{
+  "jestrunner.configPath": "jest.config.js",
+  "jestrunner.enableCodeLens": true,
+  "jestrunner.codeLensActions": ["run", "debug"],
+  "jestrunner.preserveEditorFocus": true,
+  "jestrunner.debugOptions": {
+    "skipFiles": ["<node_internals>/**"],
+    "smartStep": true
+  },
+  "jestrunner.runOptions": ["--no-cache", "--colors"]
+}
