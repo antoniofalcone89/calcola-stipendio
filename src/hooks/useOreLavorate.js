@@ -51,12 +51,16 @@ export const useOreLavorate = () => {
     setOreLavorate(newData);
     
     if (currentUser && loadedValueRef.current !== null) {
-      await saveOreLavorateFS(currentUser.uid, date, hours);
-      // Update the ref to include the new value
-      loadedValueRef.current = {
-        ...(loadedValueRef.current || {}),
-        [date]: hours,
-      };
+      try {
+        await saveOreLavorateFS(currentUser.uid, date, hours);
+        // Update the ref to include the new value
+        loadedValueRef.current = {
+          ...(loadedValueRef.current || {}),
+          [date]: hours,
+        };
+      } catch (error) {
+        console.error("Error saving hours to Firestore:", error);
+      }
     }
   };
 
@@ -67,11 +71,15 @@ export const useOreLavorate = () => {
     setOreLavorate(newData);
     
     if (currentUser && loadedValueRef.current !== null) {
-      await deleteOreLavorateFS(currentUser.uid, date);
-      // Update the ref to remove the value
-      const newRef = { ...(loadedValueRef.current || {}) };
-      delete newRef[date];
-      loadedValueRef.current = newRef;
+      try {
+        await deleteOreLavorateFS(currentUser.uid, date);
+        // Update the ref to remove the value
+        const newRef = { ...(loadedValueRef.current || {}) };
+        delete newRef[date];
+        loadedValueRef.current = newRef;
+      } catch (error) {
+        console.error("Error deleting hours from Firestore:", error);
+      }
     }
   };
 
@@ -79,8 +87,12 @@ export const useOreLavorate = () => {
     setOreLavorate({});
     
     if (currentUser && loadedValueRef.current !== null) {
-      await deleteAllOreLavorateFS(currentUser.uid);
-      loadedValueRef.current = {};
+      try {
+        await deleteAllOreLavorateFS(currentUser.uid);
+        loadedValueRef.current = {};
+      } catch (error) {
+        console.error("Error deleting all hours from Firestore:", error);
+      }
     }
   };
 

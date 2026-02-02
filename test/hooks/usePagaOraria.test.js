@@ -1,10 +1,8 @@
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { usePagaOraria } from '../../src/hooks/usePagaOraria';
-import * as database from '../../src/db/local-storage-manager';
 import * as firestore from '../../src/db/firestore';
 import { useAuth } from '../../src/contexts/AuthContext';
 
-jest.mock('../../src/db/local-storage-manager');
 jest.mock('../../src/db/firestore');
 jest.mock('../../src/contexts/AuthContext');
 jest.mock('../../src/config/firebase', () => ({
@@ -18,62 +16,44 @@ describe('usePagaOraria', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    localStorage.clear();
-    useAuth.mockReturnValue({ currentUser: null });
+    useAuth.mockReturnValue({ currentUser: null, loading: false });
     
     // Default mocks
-    database.loadPagaOraria.mockResolvedValue(10);
-    database.savePagaOraria.mockResolvedValue();
     firestore.loadPagaOrariaFS.mockResolvedValue(10);
     firestore.savePagaOrariaFS.mockResolvedValue();
   });
 
-  describe('when user is not logged in (Local DB)', () => {
-    it('should initialize with default value of 10 when localStorage is empty', () => {
-      localStorage.removeItem('pagaOraria');
-      const { result } = renderHook(() => usePagaOraria());
-      expect(result.current[0]).toBe(10);
-    });
-
-    it('should initialize with value from localStorage', () => {
-      localStorage.setItem('pagaOraria', '15.5');
-      const { result } = renderHook(() => usePagaOraria());
-      expect(result.current[0]).toBe(15.5);
-    });
-
-    it('should load pagaOraria from local database on mount', async () => {
-      database.loadPagaOraria.mockResolvedValue(12.5);
+  describe('when user is not logged in', () => {
+    it('should set pagaOraria to null when no user is logged in', async () => {
       const { result } = renderHook(() => usePagaOraria());
 
       await waitFor(() => {
-        expect(result.current[0]).toBe(12.5);
+        expect(result.current[2]).toBe(false); // loading complete
+        expect(result.current[0]).toBe(null); // pagaOraria is null
       });
-      expect(database.loadPagaOraria).toHaveBeenCalled();
+      
       expect(firestore.loadPagaOrariaFS).not.toHaveBeenCalled();
     });
 
-    it('should save pagaOraria when it changes', async () => {
+    it('should not save to Firestore when user is not logged in', async () => {
       const { result } = renderHook(() => usePagaOraria());
 
-      // Wait for initial load to complete
       await waitFor(() => {
-        expect(database.loadPagaOraria).toHaveBeenCalled();
+        expect(result.current[2]).toBe(false);
       });
 
       act(() => {
         result.current[1](15.5);
       });
 
-      await waitFor(() => {
-        expect(database.savePagaOraria).toHaveBeenCalledWith(15.5);
-      });
+      // Should not save since no user is logged in
       expect(firestore.savePagaOrariaFS).not.toHaveBeenCalled();
     });
   });
 
-  describe('when user is logged in (Firestore)', () => {
+  describe('when user is logged in', () => {
     beforeEach(() => {
-      useAuth.mockReturnValue({ currentUser: mockUser });
+      useAuth.mockReturnValue({ currentUser: mockUser, loading: false });
     });
 
     it('should load pagaOraria from Firestore on mount', async () => {
@@ -81,10 +61,21 @@ describe('usePagaOraria', () => {
       const { result } = renderHook(() => usePagaOraria());
 
       await waitFor(() => {
-        expect(result.current[0]).toBe(12.5);
+        expect(result.current[2]).toBe(false); // loading complete
+        expect(result.current[0]).toBe(12.5); // pagaOraria loaded
       });
+      
       expect(firestore.loadPagaOrariaFS).toHaveBeenCalledWith(mockUser.uid);
-      expect(database.loadPagaOraria).not.toHaveBeenCalled();
+    });
+
+    it('should handle Firestore load error gracefully', async () => {
+      firestore.loadPagaOrariaFS.mockRejectedValue(new Error('Firestore error'));
+      const { result } = renderHook(() => usePagaOraria());
+
+      await waitFor(() => {
+        expect(result.current[2]).toBe(false);
+        expect(result.current[0]).toBe(null);
+      });
     });
 
     it('should save pagaOraria to Firestore when it changes', async () => {
@@ -93,6 +84,7 @@ describe('usePagaOraria', () => {
       // Wait for initial load
       await waitFor(() => {
         expect(firestore.loadPagaOrariaFS).toHaveBeenCalled();
+        expect(result.current[2]).toBe(false);
       });
 
       act(() => {
@@ -102,7 +94,63 @@ describe('usePagaOraria', () => {
       await waitFor(() => {
         expect(firestore.savePagaOrariaFS).toHaveBeenCalledWith(mockUser.uid, 15.5);
       });
-      expect(database.savePagaOraria).not.toHaveBeenCalled();
+    });
+
+    it('should not save if value is the same as loaded value', async () => {
+      firestore.loadPagaOrariaFS.mockResolvedValue(12.5);
+      const { result } = renderHook(() => usePagaOraria());
+
+      // Wait for initial load
+      await waitFor(() => {
+        expect(result.current[0]).toBe(12.5);
+        expect(result.current[2]).toBe(false);
+      });
+
+      act(() => {
+        result.current[1](12.5); // Same value as loaded
+      });
+
+      // Should not save since value hasn't changed
+      expect(firestore.savePagaOrariaFS).not.toHaveBeenCalledWith(mockUser.uid, 12.5);
+    });
+
+    it('should handle save error gracefully', async () => {
+      firestore.savePagaOrariaFS.mockRejectedValue(new Error('Save error'));
+      const { result } = renderHook(() => usePagaOraria());
+
+      await waitFor(() => {
+        expect(result.current[2]).toBe(false);
+      });
+
+      act(() => {
+        result.current[1](15.5);
+      });
+
+      await waitFor(() => {
+        expect(firestore.savePagaOrariaFS).toHaveBeenCalledWith(mockUser.uid, 15.5);
+      });
+      // Should not throw error
+    });
+  });
+
+  describe('when auth is loading', () => {
+    it('should wait for auth to complete before loading data', async () => {
+      useAuth.mockReturnValue({ currentUser: null, loading: true });
+      const { result, rerender } = renderHook(() => usePagaOraria());
+
+      // Should be loading while auth is loading
+      expect(result.current[2]).toBe(true);
+
+      // Simulate auth completing with user
+      useAuth.mockReturnValue({ currentUser: mockUser, loading: false });
+      firestore.loadPagaOrariaFS.mockResolvedValue(12.5);
+      
+      rerender();
+
+      await waitFor(() => {
+        expect(result.current[2]).toBe(false);
+        expect(result.current[0]).toBe(12.5);
+      });
     });
   });
 });
