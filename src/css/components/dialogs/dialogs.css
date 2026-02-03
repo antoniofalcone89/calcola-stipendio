@@ -1,0 +1,129 @@
+/* Dialog/Modal Component Styles */
+
+/* Dialog Overlay */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-md);
+  backdrop-filter: blur(4px);
+}
+
+/* Dialog Container */
+.dialog {
+  background-color: var(--color-background-paper);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-heavy);
+  border: 1px solid rgba(211, 84, 0, 0.2);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  backdrop-filter: blur(10px);
+}
+
+/* Dialog Header */
+.dialog-header {
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid rgba(211, 84, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dialog-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Dialog Close Button */
+.dialog-close {
+  background: none;
+  border: none;
+  padding: var(--spacing-xs);
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.dialog-close:hover {
+  background-color: rgba(211, 84, 0, 0.1);
+  color: var(--color-primary);
+}
+
+/* Dialog Body */
+.dialog-body {
+  padding: var(--spacing-lg);
+}
+
+/* Dialog Footer */
+.dialog-footer {
+  padding: var(--spacing-lg);
+  border-top: 1px solid rgba(211, 84, 0, 0.1);
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+}
+
+/* Dialog Sizes */
+.dialog-sm {
+  max-width: 400px;
+}
+
+.dialog-lg {
+  max-width: 800px;
+}
+
+.dialog-full {
+  max-width: none;
+  margin: 0;
+  height: 100vh;
+  border-radius: 0;
+}
+
+/* Responsive Dialog */
+@media (max-width: 600px) {
+  .dialog-overlay {
+    padding: var(--spacing-sm);
+  }
+
+  .dialog {
+    margin: var(--spacing-sm);
+    width: calc(100% - 2 * var(--spacing-sm));
+    max-height: calc(100vh - 2 * var(--spacing-sm));
+  }
+
+  .dialog-header,
+  .dialog-body,
+  .dialog-footer {
+    padding: var(--spacing-md);
+  }
+
+  .dialog-footer {
+    flex-direction: column;
+  }
+
+  .dialog-footer .btn {
+    width: 100%;
+  }
+}
+
+@media (min-width: 768px) {
+  .dialog {
+    margin: var(--spacing-lg);
+  }
+}

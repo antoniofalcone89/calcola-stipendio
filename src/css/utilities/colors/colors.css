@@ -1,0 +1,89 @@
+/* Color Utilities */
+
+/* Text Colors */
+.text-primary {
+  color: var(--color-text-primary);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.text-error {
+  color: var(--color-text-error);
+}
+
+.text-white {
+  color: white;
+}
+
+.text-black {
+  color: black;
+}
+
+/* Background Colors */
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
+.bg-secondary {
+  background-color: var(--color-secondary);
+}
+
+.bg-paper {
+  background-color: var(--color-background-paper);
+}
+
+.bg-default {
+  background-color: var(--color-background-default);
+}
+
+.bg-input {
+  background-color: var(--color-background-input);
+}
+
+.bg-white {
+  background-color: white;
+}
+
+.bg-transparent {
+  background-color: transparent;
+}
+
+/* Border Colors */
+.border-primary {
+  border-color: var(--color-primary);
+}
+
+.border-secondary {
+  border-color: var(--color-secondary);
+}
+
+.border-default {
+  border-color: var(--color-border);
+}
+
+.border-focus {
+  border-color: var(--color-border-focus);
+}
+
+.border-error {
+  border-color: var(--color-text-error);
+}
+
+/* Hover States */
+.hover-bg-primary:hover {
+  background-color: var(--color-primary);
+}
+
+.hover-bg-secondary:hover {
+  background-color: var(--color-secondary);
+}
+
+.hover-text-primary:hover {
+  color: var(--color-primary);
+}
+
+.hover-text-secondary:hover {
+  color: var(--color-secondary);
+}

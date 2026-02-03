@@ -1,0 +1,94 @@
+/* Main CSS Stylesheet */
+
+/* Import our custom CSS framework */
+@import "./css/index.css";
+
+/* App-specific overrides and custom styles */
+.App {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-md);
+}
+
+@media screen and (min-width: 768px) {
+  .App {
+    padding: var(--spacing-lg);
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .App {
+    padding: var(--spacing-xl);
+  }
+}
+
+/* Legacy MUI overrides - to be removed when replacing MUI */
+.MuiTextField-root {
+  background-color: var(--color-background-input);
+  border-radius: var(--border-radius-md);
+}
+
+.MuiPaper-root {
+  background-color: var(--color-background-paper);
+  backdrop-filter: blur(10px);
+}
+
+.MuiButton-contained {
+  text-transform: none !important;
+  font-weight: var(--font-weight-semibold) !important;
+  border-radius: var(--border-radius-md) !important;
+  background: var(--gradient-primary) !important;
+}
+
+.MuiButton-contained:hover {
+  background: var(--gradient-secondary) !important;
+}
+
+.MuiTableContainer-root {
+  margin-top: var(--spacing-md);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+}
+
+@media screen and (max-width: 600px) {
+  .MuiTableContainer-root {
+    overflow-x: auto;
+  }
+
+  .MuiTable-root {
+    min-width: 200px;
+  }
+}
+
+.MuiTableHead-root .MuiTableCell-root {
+  font-weight: var(--font-weight-semibold);
+  background-color: rgba(253, 184, 19, 0.1);
+}
+
+.MuiTableRow-root:hover {
+  background-color: rgba(253, 184, 19, 0.05);
+}
+
+.MuiDialog-paper {
+  margin: var(--spacing-md) !important;
+  width: calc(100% - 2 * var(--spacing-md)) !important;
+  max-width: 600px !important;
+}
+
+@media screen and (min-width: 600px) {
+  .MuiDialog-paper {
+    margin: var(--spacing-lg) !important;
+  }
+}
+
+.MuiTypography-h4 {
+  color: var(--color-primary);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: var(--spacing-lg);
+}
+
+.MuiTypography-h6 {
+  color: var(--color-secondary);
+  margin-bottom: var(--spacing-md);
+}
