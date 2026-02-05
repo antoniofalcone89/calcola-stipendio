@@ -49,6 +49,12 @@ const CalcolatoreStipendio = () => {
     handleSave,
   } = useWorkHoursForm(saveHours);
 
+  // Wrapper per salvare e aggiornare i totali dopo la modifica
+  const saveHoursAndTotals = async (date, hours) => {
+    await saveHours(date, hours);
+    await saveTotals();
+  };
+
   const {
     editingDate,
     editingHours,
@@ -57,7 +63,7 @@ const CalcolatoreStipendio = () => {
     handleEdit,
     handleSaveEdit,
     handleClose,
-  } = useEditDialog(oreLavorate, saveHours);
+  } = useEditDialog(oreLavorate, saveHoursAndTotals);
 
   const [deleteDate, setDeleteDate] = useState(null);
   const [showDeleteAllDialog, setShowDeleteAllDialog] = useState(false);
@@ -166,11 +172,13 @@ const CalcolatoreStipendio = () => {
   const handleDelete = async (date) => {
     await removeHours(date);
     setDeleteDate(null);
+    await saveTotals();
   };
 
   const handleDeleteAll = async () => {
     await removeAllHours();
     setShowDeleteAllDialog(false);
+    await saveTotals();
   };
 
   return (

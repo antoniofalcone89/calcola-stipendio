@@ -1,3 +1,11 @@
 .h6.riepilogo-title {
   margin-bottom: unset;
 }
+
+thead {
+  font-size: var(--font-size-base);
+}
+
+td {
+  font-size: var(--font-size-sm);
+}
