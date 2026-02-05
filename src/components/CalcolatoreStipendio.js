@@ -299,12 +299,12 @@ const CalcolatoreStipendio = () => {
       >
         <TotalSummary
           totaleOre={
-            currentUser && totalsLoaded && totaleOre === 0
+            currentUser && totalsLoaded && oreLavorate === null
               ? storedTotaleOre
               : totaleOre
           }
           totaleStipendio={
-            currentUser && totalsLoaded && totaleStipendio === 0
+            currentUser && totalsLoaded && oreLavorate === null
               ? storedTotaleStipendio
               : totaleStipendio
           }
