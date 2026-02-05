@@ -11,6 +11,7 @@
 @import "./components/tables/tables.css";
 @import "./components/dialogs/dialogs.css";
 @import "./components/containers/containers.css";
+@import "./components/menu/menu.css";
 
 /* Layout styles */
 @import "./layout/layout.css";

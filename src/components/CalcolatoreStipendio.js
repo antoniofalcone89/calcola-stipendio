@@ -37,8 +37,13 @@ const CalcolatoreStipendio = () => {
     loading: pagaLoading,
     hasChanged,
   } = usePagaOraria();
-  const { oreLavorate, saveHours, removeHours, removeAllHours, loading: oreLoading } =
-    useOreLavorate();
+  const {
+    oreLavorate,
+    saveHours,
+    removeHours,
+    removeAllHours,
+    loading: oreLoading,
+  } = useOreLavorate();
 
   const [deleteDate, setDeleteDate] = useState(null);
   const [showDeleteAllDialog, setShowDeleteAllDialog] = useState(false);
@@ -51,7 +56,10 @@ const CalcolatoreStipendio = () => {
     await saveHours(date, hours);
     // Calculate new totals from the updated data (avoids stale closure issue)
     const newOreLavorate = { ...(oreLavorate || {}), [date]: hours };
-    const newTotaleOre = Object.values(newOreLavorate).reduce((acc, ore) => acc + ore, 0);
+    const newTotaleOre = Object.values(newOreLavorate).reduce(
+      (acc, ore) => acc + ore,
+      0,
+    );
     const newTotaleStipendio = newTotaleOre * (pagaOraria || 0);
     if (currentUser) {
       await saveTotalsFS(currentUser.uid, newTotaleOre, newTotaleStipendio);
@@ -170,7 +178,10 @@ const CalcolatoreStipendio = () => {
     // Calculate new totals after removing the entry (avoids stale closure issue)
     const newOreLavorate = { ...(oreLavorate || {}) };
     delete newOreLavorate[date];
-    const newTotaleOre = Object.values(newOreLavorate).reduce((acc, ore) => acc + ore, 0);
+    const newTotaleOre = Object.values(newOreLavorate).reduce(
+      (acc, ore) => acc + ore,
+      0,
+    );
     const newTotaleStipendio = newTotaleOre * (pagaOraria || 0);
     if (currentUser) {
       await saveTotalsFS(currentUser.uid, newTotaleOre, newTotaleStipendio);
@@ -232,7 +243,7 @@ const CalcolatoreStipendio = () => {
           backgroundColor: "rgba(255, 255, 255, 0.9)",
         }}
       >
-        <Grid container spacing={3}>
+        <Grid container>
           <HourlyRateInput
             pagaOraria={pagaOraria}
             onPagaOrariaChange={setPagaOraria}
@@ -244,7 +255,11 @@ const CalcolatoreStipendio = () => {
                 : 0;
               const newTotaleStipendio = currentTotaleOre * (pagaOraria || 0);
               if (currentUser) {
-                await saveTotalsFS(currentUser.uid, currentTotaleOre, newTotaleStipendio);
+                await saveTotalsFS(
+                  currentUser.uid,
+                  currentTotaleOre,
+                  newTotaleStipendio,
+                );
                 setStoredTotaleOre(currentTotaleOre);
                 setStoredTotaleStipendio(newTotaleStipendio);
               }
