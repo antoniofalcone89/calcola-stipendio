@@ -116,10 +116,50 @@
 }
 
 .input-adornment .input {
-  padding-right: 3rem;
+  padding-right: 1rem;
 }
 
 .input-adornment .btn-icon {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  transition: all var(--transition-fast);
+}
+
+.input-adornment .btn-icon:hover:not(:disabled) {
+  color: var(--color-primary-dark);
+  background-color: rgba(211, 84, 0, 0.1);
+  border-radius: 50%;
+}
+
+.input-adornment .btn-icon:disabled {
+  color: var(--color-gray-400);
+  cursor: not-allowed;
+}
+
+/* Additional form styles for components */
+.input.input-error {
+  border-color: var(--color-text-error);
+}
+
+.input.input-error:focus {
+  box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+}
+
+.form-group.full-width {
+  width: 100%;
+}
+
+.input-adornment-end {
   position: absolute;
   right: var(--spacing-xs);
   top: 50%;

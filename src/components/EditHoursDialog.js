@@ -3,10 +3,9 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
-  TextField,
-} from "@mui/material";
-import { theme } from "../theme/theme";
+} from "./ui/surfaces";
+import { Button } from "./ui/buttons";
+import { TextField } from "./ui/forms";
 
 /**
  * Dialog component for editing worked hours
@@ -21,19 +20,8 @@ const EditHoursDialog = ({
   onSave,
 }) => {
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      PaperProps={{
-        style: {
-          backgroundColor: "rgba(255, 255, 255, 0.95)",
-          backdropFilter: "blur(10px)",
-        },
-      }}
-    >
-      <DialogTitle sx={{ color: theme.palette.primary.main }}>
-        Modifica ore lavorate
-      </DialogTitle>
+    <Dialog open={open} onClose={onClose} className="dialog-container">
+      <DialogTitle className="text-primary">Modifica ore lavorate</DialogTitle>
       <DialogContent>
         <TextField
           autoFocus
@@ -46,10 +34,13 @@ const EditHoursDialog = ({
           placeholder="08.30"
           error={!!error}
           helperText={error}
+          className="input-field"
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Annulla</Button>
+        <Button onClick={onClose} variant="text">
+          Annulla
+        </Button>
         <Button onClick={onSave} variant="contained">
           Salva
         </Button>

@@ -95,6 +95,19 @@ body {
   font-weight: var(--font-weight-bold);
 }
 
+/* Additional Typography Variants */
+.font-sm {
+  font-size: var(--font-size-sm);
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.tracking-wide {
+  letter-spacing: 0.025em;
+}
+
 /* Responsive Typography */
 @media (min-width: 768px) {
   .h1 {

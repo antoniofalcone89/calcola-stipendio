@@ -5,10 +5,10 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  IconButton,
-  Box,
-  Typography,
-} from "@mui/material";
+} from "../ui/data-display";
+import { IconButton } from "../ui/buttons";
+import { Box } from "../ui/layout";
+import { Typography } from "../ui/data-display";
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
@@ -16,8 +16,8 @@ import {
 } from "@mui/icons-material";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
-import { formatTimeFromHours } from "../utils/timeUtils";
-import { theme } from "../theme/theme";
+import { formatTimeFromHours } from "../../utils/timeUtils";
+import "./assets/summary.css";
 
 /**
  * Component for displaying the summary table of worked hours
@@ -26,20 +26,14 @@ import { theme } from "../theme/theme";
 const SummaryTable = ({ oreLavorate, onEdit, onDelete, onDeleteAll }) => {
   return (
     <Box>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 2,
-        }}
-      >
-        <Typography variant="h6" sx={{ color: theme.palette.secondary.main }}>
+      <Box className="flex flex-between flex-center mb-2">
+        <Typography variant="h6" className="text-secondary riepilogo-title">
           Riepilogo del mese
         </Typography>
         <IconButton
           onClick={onDeleteAll}
-          sx={{ color: theme.palette.error.main }}
+          className="button-icon text-error"
+          size="small"
         >
           <DeleteSweepIcon />
         </IconButton>
@@ -49,22 +43,12 @@ const SummaryTable = ({ oreLavorate, onEdit, onDelete, onDeleteAll }) => {
           <TableHead>
             <TableRow>
               <TableCell
-                sx={{
-                  fontWeight: "bold",
-                  color: theme.palette.primary.main,
-                  width: "40%",
-                }}
+                className="font-bold text-primary"
+                style={{ width: "100%" }}
               >
                 Data
               </TableCell>
-              <TableCell
-                align="right"
-                sx={{
-                  fontWeight: "bold",
-                  color: theme.palette.primary.main,
-                  width: "60%",
-                }}
-              >
+              <TableCell align="right" className="font-bold text-primary">
                 Ore
               </TableCell>
             </TableRow>
@@ -77,24 +61,22 @@ const SummaryTable = ({ oreLavorate, onEdit, onDelete, onDeleteAll }) => {
               .sort(([a], [b]) => new Date(a) - new Date(b))
               .map(([data, ore]) => (
                 <TableRow key={data}>
-                  <TableCell sx={{ width: "40%" }}>
+                  <TableCell style={{ width: "40%" }}>
                     {format(new Date(data), "dd/MM/yy", { locale: it })}
                   </TableCell>
-                  <TableCell align="right" sx={{ width: "60%" }}>
+                  <TableCell align="right" style={{ width: "60%" }}>
                     {formatTimeFromHours(ore)}
                     <IconButton
                       size="small"
                       onClick={() => onEdit(data)}
-                      sx={{ ml: 1 }}
+                      className="button-icon"
                     >
                       <EditIcon fontSize="small" />
                     </IconButton>
                     <IconButton
                       size="small"
                       onClick={() => onDelete(data)}
-                      sx={{
-                        color: theme.palette.error.main,
-                      }}
+                      className="button-icon text-error"
                     >
                       <DeleteIcon fontSize="small" />
                     </IconButton>

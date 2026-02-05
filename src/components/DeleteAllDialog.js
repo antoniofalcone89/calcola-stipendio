@@ -3,9 +3,9 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
-  Typography,
-} from "@mui/material";
+} from "./ui/surfaces";
+import { Button } from "./ui/buttons";
+import { Typography } from "./ui/data-display";
 
 /**
  * Dialog component for confirming deletion of all entries
@@ -17,12 +17,14 @@ const DeleteAllDialog = ({ open, onClose, onConfirm }) => {
       <DialogTitle>Conferma eliminazione</DialogTitle>
       <DialogContent>
         <Typography>
-          Sei sicuro di voler eliminare tutti i giorni lavorativi? Questa
-          azione non può essere annullata.
+          Sei sicuro di voler eliminare tutti i giorni lavorativi? Questa azione
+          non può essere annullata.
         </Typography>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Annulla</Button>
+        <Button onClick={onClose} variant="text">
+          Annulla
+        </Button>
         <Button onClick={onConfirm} color="error" variant="contained">
           Elimina tutto
         </Button>

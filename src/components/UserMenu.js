@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { IconButton, Menu, MenuItem, Typography, Box, Avatar, Divider, ListItemIcon } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import LogoutIcon from '@mui/icons-material/Logout';
-import PersonIcon from '@mui/icons-material/Person';
-import { useAuth } from '../contexts/AuthContext';
+import React, { useState } from "react";
+import { IconButton } from "./ui/buttons";
+import { Typography } from "./ui/data-display";
+import { Box } from "./ui/layout";
+import MenuIcon from "@mui/icons-material/Menu";
+import LogoutIcon from "@mui/icons-material/Logout";
+import PersonIcon from "@mui/icons-material/Person";
+import { useAuth } from "../contexts/AuthContext";
 
 const UserMenu = () => {
   const { currentUser, logout } = useAuth();
@@ -27,51 +29,119 @@ const UserMenu = () => {
     <>
       <IconButton
         id="user-menu-button"
-        aria-controls={open ? 'user-menu' : undefined}
+        aria-controls={open ? "user-menu" : undefined}
         aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
+        aria-expanded={open ? "true" : undefined}
         aria-label="Apri menu utente"
         onClick={handleClick}
-        sx={{ color: 'primary.main' }}
+        className="button-icon text-primary"
       >
-        <MenuIcon />
+        <MenuIcon color="rgb(189, 94, 0)" />
       </IconButton>
-      <Menu
+      <div
         id="user-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          'aria-labelledby': 'user-menu-button',
-        }}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        className={`dropdown-menu ${open ? "open" : ""}`}
+        style={{ display: open ? "block" : "none" }}
       >
-        <Box sx={{ px: 2, py: 1, display: 'flex', alignItems: 'center', gap: 1.5, minWidth: 200 }}>
-          <Avatar 
-            src={currentUser?.photoURL} 
-            alt={currentUser?.displayName || 'User'}
-            sx={{ width: 32, height: 32 }}
+        <Box
+          className="menu-header"
+          style={{
+            padding: "12px 16px",
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            minWidth: "200px",
+          }}
+        >
+          <div
+            className="avatar"
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: "50%",
+              overflow: "hidden",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "var(--color-gray-200)",
+            }}
           >
-            {!currentUser?.photoURL && <PersonIcon />}
-          </Avatar>
-          <Box sx={{ overflow: 'hidden' }}>
-            <Typography variant="subtitle2" noWrap fontWeight="bold">
-              {currentUser?.displayName || 'Utente'}
+            {currentUser?.photoURL ? (
+              <img
+                src={currentUser.photoURL}
+                alt={currentUser?.displayName || "User"}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            ) : (
+              <PersonIcon fontSize="small" />
+            )}
+          </div>
+          <Box style={{ overflow: "hidden" }}>
+            <Typography
+              variant="subtitle2"
+              style={{
+                fontWeight: "bold",
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {currentUser?.displayName || "Utente"}
             </Typography>
-            <Typography variant="caption" color="text.secondary" noWrap display="block">
+            <Typography
+              variant="caption"
+              className="text-secondary"
+              style={{
+                display: "block",
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+              }}
+            >
               {currentUser?.email}
             </Typography>
           </Box>
         </Box>
-        <Divider />
-        <MenuItem onClick={handleLogout}>
-          <ListItemIcon>
-            <LogoutIcon fontSize="small" />
-          </ListItemIcon>
+        <hr
+          style={{
+            margin: "4px 0",
+            border: "none",
+            borderTop: "1px solid var(--color-gray-200)",
+          }}
+        />
+        <button
+          className="menu-item"
+          onClick={handleLogout}
+          style={{
+            padding: "8px 16px",
+            width: "100%",
+            textAlign: "left",
+            border: "none",
+            background: "none",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+          }}
+        >
+          <LogoutIcon fontSize="small" />
           Esci
-        </MenuItem>
-      </Menu>
+        </button>
+      </div>
+      {open && (
+        <div
+          className="menu-backdrop"
+          onClick={handleClose}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 999,
+          }}
+        />
+      )}
     </>
   );
 };

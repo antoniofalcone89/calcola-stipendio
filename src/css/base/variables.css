@@ -23,6 +23,15 @@
   --color-border: rgba(169, 65, 0, 0.7);
   --color-border-focus: #d35400;
 
+  /* Gray Colors */
+  --color-gray-100: #f9fafb;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+
   /* Shadows */
   --shadow-light: 0 2px 4px rgba(211, 84, 0, 0.1);
   --shadow-medium: 0 4px 8px rgba(211, 84, 0, 0.15);

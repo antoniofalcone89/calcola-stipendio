@@ -1,6 +1,12 @@
-import { Skeleton } from "../ui/skeleton";
-import { Box } from "../ui/layout";
+import React from "react";
+import Skeleton from "./Skeleton";
+import { Box } from "../layout";
 
+/**
+ * SummaryTableSkeleton Component
+ * Loading placeholder for the summary table section
+ * Follows Single Responsibility Principle - provides table loading state
+ */
 const SummaryTableSkeleton = () => {
   return (
     <Box>

@@ -11,6 +11,24 @@
   margin-bottom: var(--spacing-md);
 }
 
+.paper-flat {
+  background-color: var(--color-background-paper);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid rgba(211, 84, 0, 0.2);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.paper-elevated {
+  background-color: var(--color-background-paper);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-heavy);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(211, 84, 0, 0.2);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
 /* Container Variants */
 .container {
   width: 100%;
@@ -83,7 +101,9 @@
     padding: var(--spacing-lg);
   }
 
-  .paper {
+  .paper,
+  .paper-flat,
+  .paper-elevated {
     padding: var(--spacing-lg);
   }
 
@@ -97,7 +117,9 @@
     padding: var(--spacing-xl);
   }
 
-  .paper {
+  .paper,
+  .paper-flat,
+  .paper-elevated {
     padding: var(--spacing-xl);
   }
 

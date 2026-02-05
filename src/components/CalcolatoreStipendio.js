@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
-import { Box, Paper, Typography, Grid, ThemeProvider } from "@mui/material";
+import { Box, Grid } from "./ui/layout";
+import { Typography } from "./ui/data-display";
+import { Paper } from "./ui/surfaces";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
-import { theme } from "../theme/theme";
 import { usePagaOraria } from "../hooks/usePagaOraria";
 import { useOreLavorate } from "../hooks/useOreLavorate";
 import { useWorkHoursForm, useEditDialog } from "../hooks/useWorkHoursForm";
-import HourlyRateInput from "./HourlyRateInput";
+import HourlyRateInput from "./hourlyRate/HourlyRateInput";
 import WorkHoursInput from "./WorkHoursInput";
-import SummaryTable from "./SummaryTable";
-import TotalSummary from "./TotalSummary";
+import SummaryTable from "./summary/SummaryTable";
+import TotalSummary from "./summary/TotalSummary";
 import EditHoursDialog from "./EditHoursDialog";
 import DeleteConfirmDialog from "./DeleteConfirmDialog";
 import DeleteAllDialog from "./DeleteAllDialog";
@@ -111,48 +112,58 @@ const CalcolatoreStipendio = () => {
   // Show loading skeleton while data is loading
   if (pagaLoading || oreLoading || !currentUser || !totalsLoaded) {
     return (
-      <ThemeProvider theme={theme}>
-        <Box
-          sx={{
-            minHeight: "100vh",
-            padding: { xs: 2, sm: 3, md: 4 },
-            backgroundImage: `
+      <Box
+        className="app-container"
+        style={{
+          minHeight: "100vh",
+          padding: "16px 24px",
+          backgroundImage: `
             linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1)),
             url('${process.env.PUBLIC_URL}/images/3.webp')
           `,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            backgroundAttachment: "fixed",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundAttachment: "fixed",
+        }}
+      >
+        <HeaderSkeleton />
+
+        <Paper
+          elevation="md"
+          style={{
+            padding: "32px",
+            marginBottom: "24px",
+            backgroundColor: "rgba(255, 255, 255, 0.9)",
           }}
         >
-          <HeaderSkeleton />
+          <Grid container spacing={3}>
+            <HourlyRateInputSkeleton />
+            <WorkHoursInputSkeleton />
+          </Grid>
+        </Paper>
 
-          <Paper
-            elevation={3}
-            sx={{ p: 4, mb: 3, backgroundColor: "rgba(255, 255, 255, 0.9)" }}
-          >
-            <Grid container spacing={3}>
-              <HourlyRateInputSkeleton />
-              <WorkHoursInputSkeleton />
-            </Grid>
-          </Paper>
+        <Paper
+          elevation="md"
+          style={{
+            padding: "32px",
+            marginBottom: "24px",
+            backgroundColor: "rgba(255, 255, 255, 0.9)",
+          }}
+        >
+          <SummaryTableSkeleton />
+        </Paper>
 
-          <Paper
-            elevation={3}
-            sx={{ p: 4, mb: 3, backgroundColor: "rgba(255, 255, 255, 0.9)" }}
-          >
-            <SummaryTableSkeleton />
-          </Paper>
-
-          <Paper
-            elevation={3}
-            sx={{ p: 4, backgroundColor: "rgba(255, 255, 255, 0.9)" }}
-          >
-            <TotalSummarySkeleton />
-          </Paper>
-        </Box>
-      </ThemeProvider>
+        <Paper
+          elevation="md"
+          style={{
+            padding: "32px",
+            backgroundColor: "rgba(255, 255, 255, 0.9)",
+          }}
+        >
+          <TotalSummarySkeleton />
+        </Paper>
+      </Box>
     );
   }
 
@@ -167,121 +178,123 @@ const CalcolatoreStipendio = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Box
-        sx={{
-          minHeight: "100vh",
-          padding: { xs: 2, sm: 3, md: 4 },
-          backgroundImage: `
+    <Box
+      className="app-container"
+      style={{
+        minHeight: "100vh",
+        padding: "16px 24px",
+        backgroundImage: `
           linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1)),
           url('${process.env.PUBLIC_URL}/images/3.webp')
         `,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          backgroundAttachment: "fixed",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            mb: 4,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+      }}
+    >
+      <Box className="flex flex-between flex-center mb-4 main-title">
+        <Typography
+          variant="h4"
+          className="text-primary"
+          style={{
+            textShadow: "2px 2px 4px rgba(0,0,0,0.1)",
+            fontWeight: "bold",
+            flex: 1,
+            textAlign: "center",
+            fontSize: "2rem",
+            color: "rgb(189, 94, 0)",
           }}
         >
-          <Typography
-            variant="h4"
-            sx={{
-              color: theme.palette.primary.main,
-              textShadow: "2px 2px 4px rgba(0,0,0,0.1)",
-              fontWeight: "bold",
-              flex: 1,
-              textAlign: "center",
-            }}
-          >
-            Calcolatore Stipendio - {meseCorrente}
-          </Typography>
-          <UserMenu />
-        </Box>
-
-        <Paper
-          elevation={3}
-          sx={{ p: 4, mb: 3, backgroundColor: "rgba(255, 255, 255, 0.9)" }}
-        >
-          <Grid container spacing={3}>
-            <HourlyRateInput
-              pagaOraria={pagaOraria}
-              onPagaOrariaChange={setPagaOraria}
-              onSave={async () => {
-                await savePagaOraria();
-                await saveTotals();
-              }}
-              disabled={!hasChanged}
-            />
-            <WorkHoursInput
-              selectedDate={selectedDate}
-              onDateChange={setSelectedDate}
-              oreOggi={oreOggi}
-              onHoursChange={setOreOggi}
-              error={error}
-              onSave={handleSave}
-            />
-          </Grid>
-        </Paper>
-
-        <Paper
-          elevation={3}
-          sx={{ p: 4, mb: 3, backgroundColor: "rgba(255, 255, 255, 0.9)" }}
-        >
-          <SummaryTable
-            oreLavorate={oreLavorate}
-            onEdit={handleEdit}
-            onDelete={setDeleteDate}
-            onDeleteAll={() => setShowDeleteAllDialog(true)}
-          />
-        </Paper>
-
-        <Paper
-          elevation={3}
-          sx={{ p: 4, backgroundColor: "rgba(255, 255, 255, 0.9)" }}
-        >
-          <TotalSummary
-            totaleOre={
-              currentUser && totalsLoaded && totaleOre === 0
-                ? storedTotaleOre
-                : totaleOre
-            }
-            totaleStipendio={
-              currentUser && totalsLoaded && totaleStipendio === 0
-                ? storedTotaleStipendio
-                : totaleStipendio
-            }
-          />
-        </Paper>
-
-        <EditHoursDialog
-          open={!!editingDate}
-          editingHours={editingHours}
-          onHoursChange={setEditingHours}
-          error={editError}
-          onClose={handleClose}
-          onSave={handleSaveEdit}
-        />
-
-        <DeleteConfirmDialog
-          open={!!deleteDate}
-          onClose={() => setDeleteDate(null)}
-          onConfirm={() => handleDelete(deleteDate)}
-        />
-
-        <DeleteAllDialog
-          open={showDeleteAllDialog}
-          onClose={() => setShowDeleteAllDialog(false)}
-          onConfirm={handleDeleteAll}
-        />
+          Calcolatore Stipendio - {meseCorrente}
+        </Typography>
+        <UserMenu />
       </Box>
-    </ThemeProvider>
+
+      <Paper
+        elevation="md"
+        style={{
+          padding: "32px",
+          marginBottom: "24px",
+          backgroundColor: "rgba(255, 255, 255, 0.9)",
+        }}
+      >
+        <Grid container spacing={3}>
+          <HourlyRateInput
+            pagaOraria={pagaOraria}
+            onPagaOrariaChange={setPagaOraria}
+            onSave={async () => {
+              await savePagaOraria();
+              await saveTotals();
+            }}
+            disabled={!hasChanged}
+          />
+          <WorkHoursInput
+            selectedDate={selectedDate}
+            onDateChange={setSelectedDate}
+            oreOggi={oreOggi}
+            onHoursChange={setOreOggi}
+            error={error}
+            onSave={handleSave}
+          />
+        </Grid>
+      </Paper>
+
+      <Paper
+        elevation="md"
+        style={{
+          padding: "32px",
+          marginBottom: "24px",
+          backgroundColor: "rgba(255, 255, 255, 0.9)",
+        }}
+      >
+        <SummaryTable
+          oreLavorate={oreLavorate}
+          onEdit={handleEdit}
+          onDelete={setDeleteDate}
+          onDeleteAll={() => setShowDeleteAllDialog(true)}
+        />
+      </Paper>
+
+      <Paper
+        elevation="md"
+        style={{ padding: "32px", backgroundColor: "rgba(255, 255, 255, 0.9)" }}
+      >
+        <TotalSummary
+          totaleOre={
+            currentUser && totalsLoaded && totaleOre === 0
+              ? storedTotaleOre
+              : totaleOre
+          }
+          totaleStipendio={
+            currentUser && totalsLoaded && totaleStipendio === 0
+              ? storedTotaleStipendio
+              : totaleStipendio
+          }
+        />
+      </Paper>
+
+      <EditHoursDialog
+        open={!!editingDate}
+        editingHours={editingHours}
+        onHoursChange={setEditingHours}
+        error={editError}
+        onClose={handleClose}
+        onSave={handleSaveEdit}
+      />
+
+      <DeleteConfirmDialog
+        open={!!deleteDate}
+        onClose={() => setDeleteDate(null)}
+        onConfirm={() => handleDelete(deleteDate)}
+      />
+
+      <DeleteAllDialog
+        open={showDeleteAllDialog}
+        onClose={() => setShowDeleteAllDialog(false)}
+        onConfirm={handleDeleteAll}
+      />
+    </Box>
   );
 };
 
