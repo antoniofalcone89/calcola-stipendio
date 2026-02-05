@@ -3,9 +3,9 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
-  Typography,
-} from "@mui/material";
+} from "./ui/surfaces";
+import { Button } from "./ui/buttons";
+import { Typography } from "./ui/data-display";
 
 /**
  * Dialog component for confirming deletion of a single day
@@ -21,7 +21,9 @@ const DeleteConfirmDialog = ({ open, onClose, onConfirm }) => {
         </Typography>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Annulla</Button>
+        <Button onClick={onClose} variant="text">
+          Annulla
+        </Button>
         <Button onClick={onConfirm} color="error" variant="contained">
           Elimina
         </Button>

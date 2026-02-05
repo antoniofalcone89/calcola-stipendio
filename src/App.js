@@ -1,22 +1,16 @@
-import { Container, CssBaseline, Box, CircularProgress } from "@mui/material";
+import { Box } from "./components/ui/layout";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import CalcolatoreStipendio from "./components/CalcolatoreStipendio";
 import Login from "./components/Login";
+import "../src/css/index.css";
 
 const AppContent = () => {
   const { currentUser, loading } = useAuth();
 
   if (loading) {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "100vh",
-        }}
-      >
-        <CircularProgress />
+      <Box className="flex flex-center" style={{ minHeight: "100vh" }}>
+        <div className="spinner"></div>
       </Box>
     );
   }
@@ -26,16 +20,15 @@ const AppContent = () => {
   }
 
   return (
-    <Container maxWidth="md" sx={{ p: 0 }}>
+    <Box className="container-md">
       <CalcolatoreStipendio />
-    </Container>
+    </Box>
   );
 };
 
 function App() {
   return (
     <AuthProvider>
-      <CssBaseline />
       <AppContent />
     </AuthProvider>
   );

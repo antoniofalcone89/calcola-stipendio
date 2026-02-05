@@ -1,0 +1,81 @@
+/* CSS Custom Properties for consistent theming */
+:root {
+  /* Primary Colors */
+  --color-primary: #953c00ff;
+  --color-primary-light: #e67e22;
+  --color-primary-dark: #d35400;
+
+  /* Secondary Colors */
+  --color-secondary: #8e4b10;
+  --color-secondary-light: #b65c20;
+
+  /* Background Colors */
+  --color-background-default: #2c663d;
+  --color-background-paper: rgba(255, 245, 230, 0.9);
+  --color-background-input: rgba(255, 255, 255, 0.7);
+
+  /* Text Colors */
+  --color-text-primary: #282c34;
+  --color-text-secondary: #8e4b10;
+  --color-text-error: #d32f2f;
+
+  /* Border Colors */
+  --color-border: rgba(169, 65, 0, 0.7);
+  --color-border-focus: #d35400;
+
+  /* Gray Colors */
+  --color-gray-100: #f9fafb;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+
+  /* Shadows */
+  --shadow-light: 0 2px 4px rgba(211, 84, 0, 0.1);
+  --shadow-medium: 0 4px 8px rgba(211, 84, 0, 0.15);
+  --shadow-heavy: 0 8px 32px rgba(211, 84, 0, 0.15);
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-primary-dark)
+  );
+  --gradient-secondary: linear-gradient(135deg, #f39c12, #d35400);
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-xxl: 3rem;
+
+  /* Border Radius */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 16px;
+
+  /* Font Sizes */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+
+  /* Font Weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease-in-out;
+  --transition-normal: 0.3s ease-in-out;
+  --transition-slow: 0.5s ease-in-out;
+}

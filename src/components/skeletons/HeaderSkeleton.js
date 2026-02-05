@@ -1,23 +1,17 @@
-import { Skeleton, Box } from "@mui/material";
+import { Skeleton } from "../ui/skeleton";
+import { Box } from "../ui/layout";
 
 const HeaderSkeleton = () => {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        mb: 4,
-      }}
-    >
-      <Skeleton 
-        variant="text" 
-        width="60%" 
-        height={48} 
-        sx={{ 
+    <Box className="flex flex-between flex-center mb-4">
+      <Skeleton
+        variant="text"
+        width="60%"
+        height={48}
+        style={{
           flex: 1,
           textAlign: "center",
-        }} 
+        }}
       />
       <Skeleton variant="circular" width={40} height={40} />
     </Box>

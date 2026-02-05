@@ -1,30 +1,71 @@
-import { Skeleton, Box } from "@mui/material";
+import { Skeleton } from "../ui/skeleton";
+import { Box } from "../ui/layout";
 
 const SummaryTableSkeleton = () => {
   return (
     <Box>
-      <Skeleton variant="text" width="30%" height={32} sx={{ mb: 3 }} />
-      
+      <Skeleton
+        variant="text"
+        width="30%"
+        height={32}
+        style={{ marginBottom: "24px" }}
+      />
+
       {/* Table header */}
-      <Box sx={{ display: 'flex', mb: 2 }}>
-        <Skeleton variant="text" width="25%" height={24} sx={{ mr: 2 }} />
-        <Skeleton variant="text" width="25%" height={24} sx={{ mr: 2 }} />
-        <Skeleton variant="text" width="25%" height={24} sx={{ mr: 2 }} />
+      <Box className="flex" style={{ marginBottom: "16px" }}>
+        <Skeleton
+          variant="text"
+          width="25%"
+          height={24}
+          style={{ marginRight: "16px" }}
+        />
+        <Skeleton
+          variant="text"
+          width="25%"
+          height={24}
+          style={{ marginRight: "16px" }}
+        />
+        <Skeleton
+          variant="text"
+          width="25%"
+          height={24}
+          style={{ marginRight: "16px" }}
+        />
         <Skeleton variant="text" width="25%" height={24} />
       </Box>
-      
+
       {/* Table rows */}
       {[1, 2, 3, 4, 5].map((item) => (
-        <Box key={item} sx={{ display: 'flex', mb: 1 }}>
-          <Skeleton variant="text" width="25%" height={20} sx={{ mr: 2 }} />
-          <Skeleton variant="text" width="25%" height={20} sx={{ mr: 2 }} />
-          <Skeleton variant="text" width="25%" height={20} sx={{ mr: 2 }} />
+        <Box key={item} className="flex" style={{ marginBottom: "8px" }}>
+          <Skeleton
+            variant="text"
+            width="25%"
+            height={20}
+            style={{ marginRight: "16px" }}
+          />
+          <Skeleton
+            variant="text"
+            width="25%"
+            height={20}
+            style={{ marginRight: "16px" }}
+          />
+          <Skeleton
+            variant="text"
+            width="25%"
+            height={20}
+            style={{ marginRight: "16px" }}
+          />
           <Skeleton variant="text" width="25%" height={20} />
         </Box>
       ))}
-      
+
       {/* Delete all button */}
-      <Skeleton variant="rectangular" width="120px" height={36} sx={{ mt: 2 }} />
+      <Skeleton
+        variant="rectangular"
+        width="120px"
+        height={36}
+        style={{ marginTop: "16px" }}
+      />
     </Box>
   );
 };

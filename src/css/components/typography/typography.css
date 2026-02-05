@@ -1,0 +1,122 @@
+/* Base Typography Styles */
+body {
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  background-color: var(--color-background-default);
+}
+
+/* Heading Styles */
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+  margin-bottom: var(--spacing-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.2;
+}
+
+.h1 {
+  font-size: var(--font-size-4xl);
+  color: var(--color-primary);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.h2 {
+  font-size: var(--font-size-3xl);
+}
+
+.h3 {
+  font-size: var(--font-size-2xl);
+}
+
+.h4 {
+  font-size: var(--font-size-xl);
+  color: var(--color-primary);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: var(--spacing-lg);
+}
+
+.h5 {
+  font-size: var(--font-size-lg);
+}
+
+.h6 {
+  font-size: var(--font-size-lg);
+  color: var(--color-secondary);
+  margin-bottom: var(--spacing-md);
+}
+
+/* Text Styles */
+.text-primary {
+  color: var(--color-text-primary);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.text-error {
+  color: var(--color-text-error);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+/* Font Weights */
+.font-normal {
+  font-weight: var(--font-weight-normal);
+}
+
+.font-medium {
+  font-weight: var(--font-weight-medium);
+}
+
+.font-semibold {
+  font-weight: var(--font-weight-semibold);
+}
+
+.font-bold {
+  font-weight: var(--font-weight-bold);
+}
+
+/* Additional Typography Variants */
+.font-sm {
+  font-size: var(--font-size-sm);
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.tracking-wide {
+  letter-spacing: 0.025em;
+}
+
+/* Responsive Typography */
+@media (min-width: 768px) {
+  .h1 {
+    font-size: calc(var(--font-size-4xl) * 1.2);
+  }
+
+  .h2 {
+    font-size: calc(var(--font-size-3xl) * 1.1);
+  }
+
+  .h3 {
+    font-size: calc(var(--font-size-2xl) * 1.05);
+  }
+}

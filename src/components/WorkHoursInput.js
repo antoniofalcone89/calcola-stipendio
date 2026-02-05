@@ -1,4 +1,6 @@
-import { TextField, Button, Grid } from "@mui/material";
+import { TextField } from "./ui/forms";
+import { Button } from "./ui/buttons";
+import { Grid } from "./ui/layout";
 
 /**
  * Component for inputting work hours for a specific date
@@ -16,11 +18,11 @@ const WorkHoursInput = ({
     <Grid item xs={12} sm={6}>
       <TextField
         fullWidth
-        label="Dataaa"
+        label="Data"
         type="date"
         value={selectedDate}
         onChange={(e) => onDateChange(e.target.value)}
-        sx={{ mb: 2, backgroundColor: "rgba(255, 255, 255, 0.7)" }}
+        className="input-field"
       />
       <TextField
         fullWidth
@@ -31,19 +33,12 @@ const WorkHoursInput = ({
         placeholder="08.30"
         error={!!error}
         helperText={error}
-        sx={{ backgroundColor: "rgba(255, 255, 255, 0.7)" }}
+        className="input-field"
       />
       <Button
         variant="contained"
         onClick={onSave}
-        sx={{
-          mt: 2,
-          background: "linear-gradient(135deg,rgb(211, 85, 0),rgb(195, 78, 0))",
-          "&:hover": {
-            background: "linear-gradient(135deg, #816205ff, #6a4f04ff)",
-          },
-          color: "#fff",
-        }}
+        className="button-primary"
         fullWidth
       >
         Salva ore

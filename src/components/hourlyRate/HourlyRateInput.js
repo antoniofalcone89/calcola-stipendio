@@ -1,5 +1,8 @@
-import { TextField, Grid, InputAdornment, IconButton } from "@mui/material";
+import { TextField } from "../ui/forms";
+import { Grid } from "../ui/layout";
+import { IconButton } from "../ui/buttons";
 import SaveIcon from "@mui/icons-material/Save";
+import "./assets/hourlyRateInput.css";
 
 /**
  * Component for inputting hourly rate
@@ -25,17 +28,17 @@ const HourlyRateInput = ({
         type="number"
         value={pagaOraria ?? ""}
         onChange={handleChange}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton onClick={onSave} disabled={disabled}>
-                <SaveIcon />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-        sx={{ backgroundColor: "rgba(255, 255, 255, 0.7)" }}
-      />
+        className="paga-oraria-input-container"
+      >
+        <IconButton
+          onClick={onSave}
+          disabled={disabled}
+          className="btn-icon"
+          size="small"
+        >
+          <SaveIcon />
+        </IconButton>
+      </TextField>
     </Grid>
   );
 };
