@@ -37,8 +37,28 @@ const CalcolatoreStipendio = () => {
     loading: pagaLoading,
     hasChanged,
   } = usePagaOraria();
-  const { oreLavorate, saveHours, removeHours, removeAllHours, oreLoading } =
+  const { oreLavorate, saveHours, removeHours, removeAllHours, loading: oreLoading } =
     useOreLavorate();
+
+  const [deleteDate, setDeleteDate] = useState(null);
+  const [showDeleteAllDialog, setShowDeleteAllDialog] = useState(false);
+  const [storedTotaleOre, setStoredTotaleOre] = useState(0);
+  const [storedTotaleStipendio, setStoredTotaleStipendio] = useState(0);
+  const [totalsLoaded, setTotalsLoaded] = useState(false);
+
+  // Wrapper per salvare e aggiornare i totali dopo la modifica
+  const saveHoursAndTotals = async (date, hours) => {
+    await saveHours(date, hours);
+    // Calculate new totals from the updated data (avoids stale closure issue)
+    const newOreLavorate = { ...(oreLavorate || {}), [date]: hours };
+    const newTotaleOre = Object.values(newOreLavorate).reduce((acc, ore) => acc + ore, 0);
+    const newTotaleStipendio = newTotaleOre * (pagaOraria || 0);
+    if (currentUser) {
+      await saveTotalsFS(currentUser.uid, newTotaleOre, newTotaleStipendio);
+      setStoredTotaleOre(newTotaleOre);
+      setStoredTotaleStipendio(newTotaleStipendio);
+    }
+  };
 
   const {
     selectedDate,
@@ -47,13 +67,7 @@ const CalcolatoreStipendio = () => {
     setOreOggi,
     error,
     handleSave,
-  } = useWorkHoursForm(saveHours);
-
-  // Wrapper per salvare e aggiornare i totali dopo la modifica
-  const saveHoursAndTotals = async (date, hours) => {
-    await saveHours(date, hours);
-    await saveTotals();
-  };
+  } = useWorkHoursForm(saveHoursAndTotals);
 
   const {
     editingDate,
@@ -64,12 +78,6 @@ const CalcolatoreStipendio = () => {
     handleSaveEdit,
     handleClose,
   } = useEditDialog(oreLavorate, saveHoursAndTotals);
-
-  const [deleteDate, setDeleteDate] = useState(null);
-  const [showDeleteAllDialog, setShowDeleteAllDialog] = useState(false);
-  const [storedTotaleOre, setStoredTotaleOre] = useState(0);
-  const [storedTotaleStipendio, setStoredTotaleStipendio] = useState(0);
-  const [totalsLoaded, setTotalsLoaded] = useState(false);
 
   const meseCorrente = format(new Date(), "MMMM yyyy", { locale: it });
 
@@ -97,19 +105,6 @@ const CalcolatoreStipendio = () => {
     };
     loadTotals();
   }, [currentUser]);
-
-  // Save totals to Firestore
-  const saveTotals = async () => {
-    if (currentUser) {
-      try {
-        await saveTotalsFS(currentUser.uid, totaleOre, totaleStipendio);
-        setStoredTotaleOre(totaleOre);
-        setStoredTotaleStipendio(totaleStipendio);
-      } catch (error) {
-        console.error("Error saving totals:", error);
-      }
-    }
-  };
 
   // Show loading skeleton while data is loading
   if (pagaLoading || oreLoading || !currentUser || !totalsLoaded) {
@@ -172,13 +167,27 @@ const CalcolatoreStipendio = () => {
   const handleDelete = async (date) => {
     await removeHours(date);
     setDeleteDate(null);
-    await saveTotals();
+    // Calculate new totals after removing the entry (avoids stale closure issue)
+    const newOreLavorate = { ...(oreLavorate || {}) };
+    delete newOreLavorate[date];
+    const newTotaleOre = Object.values(newOreLavorate).reduce((acc, ore) => acc + ore, 0);
+    const newTotaleStipendio = newTotaleOre * (pagaOraria || 0);
+    if (currentUser) {
+      await saveTotalsFS(currentUser.uid, newTotaleOre, newTotaleStipendio);
+      setStoredTotaleOre(newTotaleOre);
+      setStoredTotaleStipendio(newTotaleStipendio);
+    }
   };
 
   const handleDeleteAll = async () => {
     await removeAllHours();
     setShowDeleteAllDialog(false);
-    await saveTotals();
+    // After deleting all, totals are 0
+    if (currentUser) {
+      await saveTotalsFS(currentUser.uid, 0, 0);
+      setStoredTotaleOre(0);
+      setStoredTotaleStipendio(0);
+    }
   };
 
   return (
@@ -229,7 +238,16 @@ const CalcolatoreStipendio = () => {
             onPagaOrariaChange={setPagaOraria}
             onSave={async () => {
               await savePagaOraria();
-              await saveTotals();
+              // Recalculate totals with current pagaOraria
+              const currentTotaleOre = oreLavorate
+                ? Object.values(oreLavorate).reduce((acc, ore) => acc + ore, 0)
+                : 0;
+              const newTotaleStipendio = currentTotaleOre * (pagaOraria || 0);
+              if (currentUser) {
+                await saveTotalsFS(currentUser.uid, currentTotaleOre, newTotaleStipendio);
+                setStoredTotaleOre(currentTotaleOre);
+                setStoredTotaleStipendio(newTotaleStipendio);
+              }
             }}
             disabled={!hasChanged}
           />
