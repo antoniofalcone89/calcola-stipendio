@@ -95,10 +95,6 @@ const CalcolatoreStipendio = () => {
   // Save totals to Firestore
   const saveTotals = async () => {
     if (currentUser) {
-      const totaleOre = oreLavorate
-        ? Object.values(oreLavorate).reduce((sum, ore) => sum + ore, 0)
-        : 0;
-      const totaleStipendio = totaleOre * (pagaOraria || 0);
       try {
         await saveTotalsFS(currentUser.uid, totaleOre, totaleStipendio);
         setStoredTotaleOre(totaleOre);
