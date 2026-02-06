@@ -149,13 +149,13 @@ const CalcolatoreStipendio = () => {
     );
   }
 
-  const handleDelete = async (date) => {
-    await removeHours(date);
+  const handleDelete = (date) => {
+    removeHours(date);
     setDeleteDate(null);
   };
 
-  const handleDeleteAll = async () => {
-    await removeAllHours();
+  const handleDeleteAll = () => {
+    removeAllHours();
     setShowDeleteAllDialog(false);
   };
 
@@ -239,10 +239,7 @@ const CalcolatoreStipendio = () => {
         elevation="md"
         style={{ padding: "32px", backgroundColor: "rgba(255, 255, 255, 0.9)" }}
       >
-        <TotalSummary
-          totaleOre={totaleOre}
-          totaleStipendio={totaleStipendio}
-        />
+        <TotalSummary totaleOre={totaleOre} totaleStipendio={totaleStipendio} />
       </Paper>
 
       <EditHoursDialog

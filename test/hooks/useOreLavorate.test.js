@@ -17,7 +17,7 @@ describe('useOreLavorate', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useAuth.mockReturnValue({ currentUser: null, loading: false });
-    
+
     // Default mocks
     firestore.loadOreLavorateFS.mockResolvedValue({});
     firestore.saveOreLavorateFS.mockResolvedValue();
@@ -30,10 +30,10 @@ describe('useOreLavorate', () => {
       const { result } = renderHook(() => useOreLavorate());
 
       await waitFor(() => {
-        expect(result.current.loading).toBe(false); // loading complete
-        expect(result.current.oreLavorate).toBe(null); // oreLavorate is null
+        expect(result.current.loading).toBe(false);
+        expect(result.current.oreLavorate).toBe(null);
       });
-      
+
       expect(firestore.loadOreLavorateFS).not.toHaveBeenCalled();
     });
 
@@ -44,8 +44,8 @@ describe('useOreLavorate', () => {
         expect(result.current.loading).toBe(false);
       });
 
-      await act(async () => {
-        await result.current.saveHours('2024-01-15', 8.5);
+      act(() => {
+        result.current.saveHours('2024-01-15', 8.5);
       });
 
       expect(firestore.saveOreLavorateFS).not.toHaveBeenCalled();
@@ -58,8 +58,8 @@ describe('useOreLavorate', () => {
         expect(result.current.loading).toBe(false);
       });
 
-      await act(async () => {
-        await result.current.removeHours('2024-01-15');
+      act(() => {
+        result.current.removeHours('2024-01-15');
       });
 
       expect(firestore.deleteOreLavorateFS).not.toHaveBeenCalled();
@@ -72,8 +72,8 @@ describe('useOreLavorate', () => {
         expect(result.current.loading).toBe(false);
       });
 
-      await act(async () => {
-        await result.current.removeAllHours();
+      act(() => {
+        result.current.removeAllHours();
       });
 
       expect(firestore.deleteAllOreLavorateFS).not.toHaveBeenCalled();
@@ -92,10 +92,10 @@ describe('useOreLavorate', () => {
       const { result } = renderHook(() => useOreLavorate());
 
       await waitFor(() => {
-        expect(result.current.loading).toBe(false); // loading complete
-        expect(result.current.oreLavorate).toEqual(mockData); // oreLavorate loaded
+        expect(result.current.loading).toBe(false);
+        expect(result.current.oreLavorate).toEqual(mockData);
       });
-      
+
       expect(firestore.loadOreLavorateFS).toHaveBeenCalledWith(mockUser.uid);
     });
 
@@ -109,45 +109,77 @@ describe('useOreLavorate', () => {
       });
     });
 
-    it('should save hours to Firestore', async () => {
+    it('should save hours and update local state', async () => {
       const { result } = renderHook(() => useOreLavorate());
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
 
-      await act(async () => {
-        await result.current.saveHours('2024-01-15', 8.5);
+      act(() => {
+        result.current.saveHours('2024-01-15', 8.5);
       });
 
+      expect(result.current.oreLavorate).toEqual({ '2024-01-15': 8.5 });
       expect(firestore.saveOreLavorateFS).toHaveBeenCalledWith(mockUser.uid, '2024-01-15', 8.5);
     });
 
-    it('should remove hours from Firestore', async () => {
+    it('should accumulate hours across multiple saves', async () => {
       const { result } = renderHook(() => useOreLavorate());
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
 
-      await act(async () => {
-        await result.current.removeHours('2024-01-15');
+      act(() => {
+        result.current.saveHours('2024-01-15', 8.5);
       });
 
+      act(() => {
+        result.current.saveHours('2024-01-16', 7);
+      });
+
+      expect(result.current.oreLavorate).toEqual({
+        '2024-01-15': 8.5,
+        '2024-01-16': 7,
+      });
+    });
+
+    it('should remove hours and update local state', async () => {
+      firestore.loadOreLavorateFS.mockResolvedValue({
+        '2024-01-15': 8.5,
+        '2024-01-16': 7,
+      });
+      const { result } = renderHook(() => useOreLavorate());
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      act(() => {
+        result.current.removeHours('2024-01-15');
+      });
+
+      expect(result.current.oreLavorate).toEqual({ '2024-01-16': 7 });
       expect(firestore.deleteOreLavorateFS).toHaveBeenCalledWith(mockUser.uid, '2024-01-15');
     });
 
-    it('should remove all hours from Firestore', async () => {
+    it('should remove all hours and update local state', async () => {
+      firestore.loadOreLavorateFS.mockResolvedValue({
+        '2024-01-15': 8.5,
+        '2024-01-16': 7,
+      });
       const { result } = renderHook(() => useOreLavorate());
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
 
-      await act(async () => {
-        await result.current.removeAllHours();
+      act(() => {
+        result.current.removeAllHours();
       });
 
+      expect(result.current.oreLavorate).toEqual({});
       expect(firestore.deleteAllOreLavorateFS).toHaveBeenCalledWith(mockUser.uid);
     });
 
@@ -160,32 +192,35 @@ describe('useOreLavorate', () => {
         expect(result.current.loading).toBe(false);
       });
 
-      await act(async () => {
-        await result.current.saveHours('2024-01-15', 8.5);
+      act(() => {
+        result.current.saveHours('2024-01-15', 8.5);
       });
 
+      // Local state still updates even if Firestore fails
+      expect(result.current.oreLavorate).toEqual({ '2024-01-15': 8.5 });
       expect(firestore.saveOreLavorateFS).toHaveBeenCalledWith(mockUser.uid, '2024-01-15', 8.5);
-      
-      // Restore console.error
+
       consoleSpy.mockRestore();
     });
 
     it('should handle delete error gracefully', async () => {
       const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
       firestore.deleteOreLavorateFS.mockRejectedValue(new Error('Delete error'));
+      firestore.loadOreLavorateFS.mockResolvedValue({ '2024-01-15': 8.5 });
       const { result } = renderHook(() => useOreLavorate());
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
 
-      await act(async () => {
-        await result.current.removeHours('2024-01-15');
+      act(() => {
+        result.current.removeHours('2024-01-15');
       });
 
+      // Local state still updates even if Firestore fails
+      expect(result.current.oreLavorate).toEqual({});
       expect(firestore.deleteOreLavorateFS).toHaveBeenCalledWith(mockUser.uid, '2024-01-15');
-      
-      // Restore console.error
+
       consoleSpy.mockRestore();
     });
   });
@@ -202,7 +237,7 @@ describe('useOreLavorate', () => {
       useAuth.mockReturnValue({ currentUser: mockUser, loading: false });
       const mockData = { '2024-01-15': 8.5 };
       firestore.loadOreLavorateFS.mockResolvedValue(mockData);
-      
+
       rerender();
 
       await waitFor(() => {

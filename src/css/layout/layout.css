@@ -96,7 +96,6 @@
 /* Grid Layout */
 .grid {
   display: grid;
-  gap: var(--spacing-md);
 }
 
 .grid-cols-1 {
