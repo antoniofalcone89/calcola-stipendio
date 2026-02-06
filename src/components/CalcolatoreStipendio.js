@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Box, Grid } from "./ui/layout";
 import { Typography } from "./ui/data-display";
 import { Paper } from "./ui/surfaces";
@@ -16,7 +16,7 @@ import DeleteConfirmDialog from "./DeleteConfirmDialog";
 import DeleteAllDialog from "./DeleteAllDialog";
 import UserMenu from "./UserMenu";
 import { useAuth } from "../contexts/AuthContext";
-import { loadTotalsFS, saveTotalsFS } from "../db/firestore";
+import { saveTotalsFS } from "../db/firestore";
 // Import skeleton components
 import HeaderSkeleton from "./skeletons/HeaderSkeleton";
 import HourlyRateInputSkeleton from "./skeletons/HourlyRateInputSkeleton";
@@ -47,26 +47,6 @@ const CalcolatoreStipendio = () => {
 
   const [deleteDate, setDeleteDate] = useState(null);
   const [showDeleteAllDialog, setShowDeleteAllDialog] = useState(false);
-  const [storedTotaleOre, setStoredTotaleOre] = useState(0);
-  const [storedTotaleStipendio, setStoredTotaleStipendio] = useState(0);
-  const [totalsLoaded, setTotalsLoaded] = useState(false);
-
-  // Wrapper per salvare e aggiornare i totali dopo la modifica
-  const saveHoursAndTotals = async (date, hours) => {
-    await saveHours(date, hours);
-    // Calculate new totals from the updated data (avoids stale closure issue)
-    const newOreLavorate = { ...(oreLavorate || {}), [date]: hours };
-    const newTotaleOre = Object.values(newOreLavorate).reduce(
-      (acc, ore) => acc + ore,
-      0,
-    );
-    const newTotaleStipendio = newTotaleOre * (pagaOraria || 0);
-    if (currentUser) {
-      await saveTotalsFS(currentUser.uid, newTotaleOre, newTotaleStipendio);
-      setStoredTotaleOre(newTotaleOre);
-      setStoredTotaleStipendio(newTotaleStipendio);
-    }
-  };
 
   const {
     selectedDate,
@@ -75,7 +55,7 @@ const CalcolatoreStipendio = () => {
     setOreOggi,
     error,
     handleSave,
-  } = useWorkHoursForm(saveHoursAndTotals);
+  } = useWorkHoursForm(saveHours);
 
   const {
     editingDate,
@@ -85,7 +65,7 @@ const CalcolatoreStipendio = () => {
     handleEdit,
     handleSaveEdit,
     handleClose,
-  } = useEditDialog(oreLavorate, saveHoursAndTotals);
+  } = useEditDialog(oreLavorate, saveHours);
 
   const meseCorrente = format(new Date(), "MMMM yyyy", { locale: it });
 
@@ -96,26 +76,23 @@ const CalcolatoreStipendio = () => {
       : 0;
   const totaleStipendio = totaleOre * (pagaOraria || 0);
 
-  // Load totals from Firestore
+  // Sync totals to Firestore whenever they change
+  const prevTotalsRef = useRef({ totaleOre: null, totaleStipendio: null });
   useEffect(() => {
-    const loadTotals = async () => {
-      try {
-        if (currentUser) {
-          const t = await loadTotalsFS(currentUser.uid);
-          setStoredTotaleOre(t.totaleOre || 0);
-          setStoredTotaleStipendio(t.totaleStipendio || 0);
-        }
-        setTotalsLoaded(true);
-      } catch (error) {
-        console.error("Error loading totals:", error);
-        setTotalsLoaded(true);
-      }
-    };
-    loadTotals();
-  }, [currentUser]);
+    if (
+      currentUser &&
+      oreLavorate !== null &&
+      pagaOraria !== null &&
+      (prevTotalsRef.current.totaleOre !== totaleOre ||
+        prevTotalsRef.current.totaleStipendio !== totaleStipendio)
+    ) {
+      prevTotalsRef.current = { totaleOre, totaleStipendio };
+      saveTotalsFS(currentUser.uid, totaleOre, totaleStipendio);
+    }
+  }, [currentUser, oreLavorate, pagaOraria, totaleOre, totaleStipendio]);
 
   // Show loading skeleton while data is loading
-  if (pagaLoading || oreLoading || !currentUser || !totalsLoaded) {
+  if (pagaLoading || oreLoading || !currentUser) {
     return (
       <Box
         className="app-container"
@@ -175,30 +152,11 @@ const CalcolatoreStipendio = () => {
   const handleDelete = async (date) => {
     await removeHours(date);
     setDeleteDate(null);
-    // Calculate new totals after removing the entry (avoids stale closure issue)
-    const newOreLavorate = { ...(oreLavorate || {}) };
-    delete newOreLavorate[date];
-    const newTotaleOre = Object.values(newOreLavorate).reduce(
-      (acc, ore) => acc + ore,
-      0,
-    );
-    const newTotaleStipendio = newTotaleOre * (pagaOraria || 0);
-    if (currentUser) {
-      await saveTotalsFS(currentUser.uid, newTotaleOre, newTotaleStipendio);
-      setStoredTotaleOre(newTotaleOre);
-      setStoredTotaleStipendio(newTotaleStipendio);
-    }
   };
 
   const handleDeleteAll = async () => {
     await removeAllHours();
     setShowDeleteAllDialog(false);
-    // After deleting all, totals are 0
-    if (currentUser) {
-      await saveTotalsFS(currentUser.uid, 0, 0);
-      setStoredTotaleOre(0);
-      setStoredTotaleStipendio(0);
-    }
   };
 
   return (
@@ -247,23 +205,7 @@ const CalcolatoreStipendio = () => {
           <HourlyRateInput
             pagaOraria={pagaOraria}
             onPagaOrariaChange={setPagaOraria}
-            onSave={async () => {
-              await savePagaOraria();
-              // Recalculate totals with current pagaOraria
-              const currentTotaleOre = oreLavorate
-                ? Object.values(oreLavorate).reduce((acc, ore) => acc + ore, 0)
-                : 0;
-              const newTotaleStipendio = currentTotaleOre * (pagaOraria || 0);
-              if (currentUser) {
-                await saveTotalsFS(
-                  currentUser.uid,
-                  currentTotaleOre,
-                  newTotaleStipendio,
-                );
-                setStoredTotaleOre(currentTotaleOre);
-                setStoredTotaleStipendio(newTotaleStipendio);
-              }
-            }}
+            onSave={savePagaOraria}
             disabled={!hasChanged}
           />
           <WorkHoursInput
@@ -298,16 +240,8 @@ const CalcolatoreStipendio = () => {
         style={{ padding: "32px", backgroundColor: "rgba(255, 255, 255, 0.9)" }}
       >
         <TotalSummary
-          totaleOre={
-            currentUser && totalsLoaded && oreLavorate === null
-              ? storedTotaleOre
-              : totaleOre
-          }
-          totaleStipendio={
-            currentUser && totalsLoaded && oreLavorate === null
-              ? storedTotaleStipendio
-              : totaleStipendio
-          }
+          totaleOre={totaleOre}
+          totaleStipendio={totaleStipendio}
         />
       </Paper>
 
