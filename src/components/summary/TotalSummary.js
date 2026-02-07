@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Typography } from "../ui/data-display";
 import { formatTimeFromHours } from "../../utils/timeUtils";
 
@@ -21,4 +22,10 @@ const TotalSummary = ({ totaleOre, totaleStipendio }) => {
   );
 };
 
-export default TotalSummary;
+export default memo(TotalSummary, (prevProps, nextProps) => {
+  // Custom comparison to detect changes
+  return (
+    prevProps.totaleOre === nextProps.totaleOre &&
+    prevProps.totaleStipendio === nextProps.totaleStipendio
+  );
+});

@@ -228,6 +228,7 @@ const CalcolatoreStipendio = () => {
         }}
       >
         <SummaryTable
+          key={Object.keys(oreLavorate || {}).join(",")}
           oreLavorate={oreLavorate}
           onEdit={handleEdit}
           onDelete={setDeleteDate}
@@ -239,7 +240,11 @@ const CalcolatoreStipendio = () => {
         elevation="md"
         style={{ padding: "32px", backgroundColor: "rgba(255, 255, 255, 0.9)" }}
       >
-        <TotalSummary totaleOre={totaleOre} totaleStipendio={totaleStipendio} />
+        <TotalSummary
+          key={`${totaleOre}-${totaleStipendio}`}
+          totaleOre={totaleOre}
+          totaleStipendio={totaleStipendio}
+        />
       </Paper>
 
       <EditHoursDialog

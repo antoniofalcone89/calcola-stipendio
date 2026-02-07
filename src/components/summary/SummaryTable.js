@@ -6,6 +6,7 @@ import {
   TableHead,
   TableRow,
 } from "../ui/data-display";
+import { memo } from "react";
 import { IconButton } from "../ui/buttons";
 import { Box } from "../ui/layout";
 import { Typography } from "../ui/data-display";
@@ -90,4 +91,13 @@ const SummaryTable = ({ oreLavorate, onEdit, onDelete, onDeleteAll }) => {
   );
 };
 
-export default SummaryTable;
+export default memo(SummaryTable, (prevProps, nextProps) => {
+  // Deep comparison of oreLavorate objects
+  const areEqual =
+    JSON.stringify(prevProps.oreLavorate) ===
+      JSON.stringify(nextProps.oreLavorate) &&
+    prevProps.onEdit === nextProps.onEdit &&
+    prevProps.onDelete === nextProps.onDelete &&
+    prevProps.onDeleteAll === nextProps.onDeleteAll;
+  return areEqual;
+});
