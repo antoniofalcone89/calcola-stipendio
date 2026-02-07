@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogActions,
 } from "./ui/surfaces";
+import { memo } from "react";
 import { Button } from "./ui/buttons";
 import { TextField } from "./ui/forms";
 
@@ -49,4 +50,13 @@ const EditHoursDialog = ({
   );
 };
 
-export default EditHoursDialog;
+export default memo(EditHoursDialog, (prevProps, nextProps) => {
+  return (
+    prevProps.open === nextProps.open &&
+    prevProps.editingHours === nextProps.editingHours &&
+    prevProps.error === nextProps.error &&
+    prevProps.onHoursChange === nextProps.onHoursChange &&
+    prevProps.onClose === nextProps.onClose &&
+    prevProps.onSave === nextProps.onSave
+  );
+});

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Box, Grid } from "./ui/layout";
 import { Typography } from "./ui/data-display";
 import { Paper } from "./ui/surfaces";
@@ -67,14 +67,24 @@ const CalcolatoreStipendio = () => {
     handleClose,
   } = useEditDialog(oreLavorate, saveHours);
 
-  const meseCorrente = format(new Date(), "MMMM yyyy", { locale: it });
+  const meseCorrente = useMemo(
+    () => format(new Date(), "MMMM yyyy", { locale: it }),
+    [],
+  );
 
   // Calculate totals with null safety
-  const totaleOre =
-    pagaOraria !== null && oreLavorate !== null
-      ? Object.values(oreLavorate).reduce((acc, ore) => acc + ore, 0)
-      : 0;
-  const totaleStipendio = totaleOre * (pagaOraria || 0);
+  const totaleOre = useMemo(
+    () =>
+      pagaOraria !== null && oreLavorate !== null
+        ? Object.values(oreLavorate).reduce((acc, ore) => acc + ore, 0)
+        : 0,
+    [pagaOraria, oreLavorate],
+  );
+
+  const totaleStipendio = useMemo(
+    () => totaleOre * (pagaOraria || 0),
+    [totaleOre, pagaOraria],
+  );
 
   // Sync totals to Firestore whenever they change
   const prevTotalsRef = useRef({ totaleOre: null, totaleStipendio: null });
@@ -90,6 +100,36 @@ const CalcolatoreStipendio = () => {
       saveTotalsFS(currentUser.uid, totaleOre, totaleStipendio);
     }
   }, [currentUser, oreLavorate, pagaOraria, totaleOre, totaleStipendio]);
+
+  // Memoized callbacks for handlers
+  const handleDelete = useCallback(
+    (date) => {
+      removeHours(date);
+      setDeleteDate(null);
+    },
+    [removeHours],
+  );
+
+  const handleDeleteAll = useCallback(() => {
+    removeAllHours();
+    setShowDeleteAllDialog(false);
+  }, [removeAllHours]);
+
+  const handleCloseMobileDialog = useCallback(() => {
+    setDeleteDate(null);
+  }, []);
+
+  const handleCloseDeleteAllDialog = useCallback(() => {
+    setShowDeleteAllDialog(false);
+  }, []);
+
+  const handleShowDeleteAllDialog = useCallback(() => {
+    setShowDeleteAllDialog(true);
+  }, []);
+
+  const handleSetDeleteDate = useCallback((date) => {
+    setDeleteDate(date);
+  }, []);
 
   // Show loading skeleton while data is loading
   if (pagaLoading || oreLoading || !currentUser) {
@@ -148,16 +188,6 @@ const CalcolatoreStipendio = () => {
       </Box>
     );
   }
-
-  const handleDelete = (date) => {
-    removeHours(date);
-    setDeleteDate(null);
-  };
-
-  const handleDeleteAll = () => {
-    removeAllHours();
-    setShowDeleteAllDialog(false);
-  };
 
   return (
     <Box
@@ -231,8 +261,8 @@ const CalcolatoreStipendio = () => {
           key={Object.keys(oreLavorate || {}).join(",")}
           oreLavorate={oreLavorate}
           onEdit={handleEdit}
-          onDelete={setDeleteDate}
-          onDeleteAll={() => setShowDeleteAllDialog(true)}
+          onDelete={handleSetDeleteDate}
+          onDeleteAll={handleShowDeleteAllDialog}
         />
       </Paper>
 
@@ -258,13 +288,13 @@ const CalcolatoreStipendio = () => {
 
       <DeleteConfirmDialog
         open={!!deleteDate}
-        onClose={() => setDeleteDate(null)}
+        onClose={handleCloseMobileDialog}
         onConfirm={() => handleDelete(deleteDate)}
       />
 
       <DeleteAllDialog
         open={showDeleteAllDialog}
-        onClose={() => setShowDeleteAllDialog(false)}
+        onClose={handleCloseDeleteAllDialog}
         onConfirm={handleDeleteAll}
       />
     </Box>

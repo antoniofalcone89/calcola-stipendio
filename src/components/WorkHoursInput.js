@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { TextField } from "./ui/forms";
 import { Button } from "./ui/buttons";
 import { Grid } from "./ui/layout";
@@ -27,13 +28,15 @@ const WorkHoursInput = ({
       <TextField
         fullWidth
         label="Ore lavorate"
-        type="text"
+        type="number"
         value={oreOggi}
         onChange={(e) => onHoursChange(e.target.value)}
         placeholder="08.30"
         error={!!error}
         helperText={error}
         className="input-field"
+        inputMode="number"
+        pattern="[0-9]*"
       />
       <Button
         variant="contained"
@@ -47,4 +50,13 @@ const WorkHoursInput = ({
   );
 };
 
-export default WorkHoursInput;
+export default memo(WorkHoursInput, (prevProps, nextProps) => {
+  return (
+    prevProps.selectedDate === nextProps.selectedDate &&
+    prevProps.oreOggi === nextProps.oreOggi &&
+    prevProps.error === nextProps.error &&
+    prevProps.onDateChange === nextProps.onDateChange &&
+    prevProps.onHoursChange === nextProps.onHoursChange &&
+    prevProps.onSave === nextProps.onSave
+  );
+});

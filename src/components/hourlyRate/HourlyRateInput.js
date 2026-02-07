@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { TextField } from "../ui/forms";
 import { Grid } from "../ui/layout";
 import { IconButton } from "../ui/buttons";
@@ -43,4 +44,11 @@ const HourlyRateInput = ({
   );
 };
 
-export default HourlyRateInput;
+export default memo(HourlyRateInput, (prevProps, nextProps) => {
+  return (
+    prevProps.pagaOraria === nextProps.pagaOraria &&
+    prevProps.disabled === nextProps.disabled &&
+    prevProps.onPagaOrariaChange === nextProps.onPagaOrariaChange &&
+    prevProps.onSave === nextProps.onSave
+  );
+});

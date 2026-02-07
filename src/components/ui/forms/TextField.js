@@ -10,7 +10,7 @@ const TextField = React.forwardRef(
   (
     {
       label,
-      type = "text",
+      type,
       value,
       defaultValue,
       onChange,

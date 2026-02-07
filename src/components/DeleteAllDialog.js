@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogActions,
 } from "./ui/surfaces";
+import { memo } from "react";
 import { Button } from "./ui/buttons";
 import { Typography } from "./ui/data-display";
 
@@ -33,4 +34,10 @@ const DeleteAllDialog = ({ open, onClose, onConfirm }) => {
   );
 };
 
-export default DeleteAllDialog;
+export default memo(DeleteAllDialog, (prevProps, nextProps) => {
+  return (
+    prevProps.open === nextProps.open &&
+    prevProps.onClose === nextProps.onClose &&
+    prevProps.onConfirm === nextProps.onConfirm
+  );
+});

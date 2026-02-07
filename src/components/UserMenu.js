@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { Typography } from "./ui/data-display";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PersonIcon from "@mui/icons-material/Person";
@@ -103,4 +103,4 @@ const UserMenu = () => {
   );
 };
 
-export default UserMenu;
+export default memo(UserMenu);
