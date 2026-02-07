@@ -4,5 +4,5 @@
  * @returns {boolean} True if valid format
  */
 export const isValidTimeFormat = (time) => {
-  return /^([0-1]?[0-9]|2[0-3])(\.[0-5][0-9])?$/.test(time);
+  return /^([0-1]?[0-9]|2[0-3])([.,][0-5][0-9])?$/.test(time);
 };

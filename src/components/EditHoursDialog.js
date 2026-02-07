@@ -36,6 +36,7 @@ const EditHoursDialog = ({
           error={!!error}
           helperText={error}
           className="input-field"
+          inputMode="decimal"
         />
       </DialogContent>
       <DialogActions>

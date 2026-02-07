@@ -28,15 +28,14 @@ const WorkHoursInput = ({
       <TextField
         fullWidth
         label="Ore lavorate"
-        type="number"
+        type="text"
         value={oreOggi}
         onChange={(e) => onHoursChange(e.target.value)}
         placeholder="08.30"
         error={!!error}
         helperText={error}
         className="input-field"
-        inputMode="number"
-        pattern="[0-9]*"
+        inputMode="decimal"
       />
       <Button
         variant="contained"
