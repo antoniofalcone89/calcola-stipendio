@@ -43,7 +43,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
-          script: rm -rf /var/www/calcola-stipendio/*
+          script: rm -rf ~/calcola-stipendio/*
 
       - name: Copia file su VPS via SCP
         uses: appleboy/scp-action@master
@@ -52,6 +52,6 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           source: "build/*"
-          target: "/var/www/calcola-stipendio"
+          target: "~/calcola-stipendio"
           strip_components: 1
           overwrite: true
