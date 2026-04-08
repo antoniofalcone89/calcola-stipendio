@@ -16,6 +16,24 @@ export const convertTimeToHours = (timeString) => {
 };
 
 /**
+ * Groups worked hours by month
+ * @param {Object} oreLavorate - Map of date strings to hours
+ * @returns {Object} Map of "YYYY-MM" keys to { totalHours, days }
+ */
+export const groupByMonth = (oreLavorate) => {
+  const months = {};
+  Object.entries(oreLavorate || {}).forEach(([date, hours]) => {
+    const month = date.slice(0, 7);
+    if (!months[month]) {
+      months[month] = { totalHours: 0, days: {} };
+    }
+    months[month].totalHours += hours;
+    months[month].days[date] = hours;
+  });
+  return months;
+};
+
+/**
  * Formats decimal hours to time string (HH.mm)
  * @param {number} hours - Decimal hours
  * @returns {string} Time string in format HH.mm

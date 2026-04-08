@@ -4,8 +4,6 @@ import { Typography } from "./ui/data-display";
 import { Paper } from "./ui/surfaces";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
-import { usePagaOraria } from "../hooks/usePagaOraria";
-import { useOreLavorate } from "../hooks/useOreLavorate";
 import { useWorkHoursForm, useEditDialog } from "../hooks/useWorkHoursForm";
 import HourlyRateInput from "./hourlyRate/HourlyRateInput";
 import WorkHoursInput from "./WorkHoursInput";
@@ -17,7 +15,6 @@ import DeleteAllDialog from "./DeleteAllDialog";
 import UserMenu from "./UserMenu";
 import { useAuth } from "../contexts/AuthContext";
 import { saveTotalsFS } from "../db/firestore";
-// Import skeleton components
 import HeaderSkeleton from "./skeletons/HeaderSkeleton";
 import HourlyRateInputSkeleton from "./skeletons/HourlyRateInputSkeleton";
 import WorkHoursInputSkeleton from "./skeletons/WorkHoursInputSkeleton";
@@ -28,22 +25,20 @@ import TotalSummarySkeleton from "./skeletons/TotalSummarySkeleton";
  * Main component for salary calculator
  * Single Responsibility: Orchestrate all sub-components and manage high-level state
  */
-const CalcolatoreStipendio = () => {
+const CalcolatoreStipendio = ({
+  oreLavorate,
+  saveHours,
+  removeHours,
+  removeAllHours,
+  oreLoading,
+  pagaOraria,
+  setPagaOraria,
+  savePagaOraria,
+  pagaLoading,
+  hasChanged,
+  onNavigate,
+}) => {
   const { currentUser } = useAuth();
-  const {
-    pagaOraria,
-    setPagaOraria,
-    savePagaOraria,
-    loading: pagaLoading,
-    hasChanged,
-  } = usePagaOraria();
-  const {
-    oreLavorate,
-    saveHours,
-    removeHours,
-    removeAllHours,
-    loading: oreLoading,
-  } = useOreLavorate();
 
   const [deleteDate, setDeleteDate] = useState(null);
   const [showDeleteAllDialog, setShowDeleteAllDialog] = useState(false);
@@ -72,7 +67,6 @@ const CalcolatoreStipendio = () => {
     [],
   );
 
-  // Calculate totals with null safety
   const totaleOre = useMemo(
     () =>
       pagaOraria !== null && oreLavorate !== null
@@ -86,7 +80,6 @@ const CalcolatoreStipendio = () => {
     [totaleOre, pagaOraria],
   );
 
-  // Sync totals to Firestore whenever they change
   const prevTotalsRef = useRef({ totaleOre: null, totaleStipendio: null });
   useEffect(() => {
     if (
@@ -101,7 +94,6 @@ const CalcolatoreStipendio = () => {
     }
   }, [currentUser, oreLavorate, pagaOraria, totaleOre, totaleStipendio]);
 
-  // Memoized callbacks for handlers
   const handleDelete = useCallback(
     (date) => {
       removeHours(date);
@@ -131,7 +123,6 @@ const CalcolatoreStipendio = () => {
     setDeleteDate(date);
   }, []);
 
-  // Show loading skeleton while data is loading
   if (pagaLoading || oreLoading || !currentUser) {
     return (
       <Box
@@ -220,7 +211,7 @@ const CalcolatoreStipendio = () => {
         >
           Calcolatore Stipendio - {meseCorrente}
         </Typography>
-        <UserMenu />
+        <UserMenu onNavigate={onNavigate} />
       </Box>
 
       <Paper

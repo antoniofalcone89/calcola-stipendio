@@ -1,10 +1,11 @@
 import React, { useState, useEffect, memo } from "react";
 import { Typography } from "./ui/data-display";
 import LogoutIcon from "@mui/icons-material/Logout";
+import HistoryIcon from "@mui/icons-material/History";
 import PersonIcon from "@mui/icons-material/Person";
 import { useAuth } from "../contexts/AuthContext";
 
-const UserMenu = () => {
+const UserMenu = ({ onNavigate }) => {
   const { currentUser, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -92,6 +93,13 @@ const UserMenu = () => {
 
           {/* Menu Items */}
           <div className="menu-items">
+            <button
+              className="menu-item-btn"
+              onClick={() => { handleClose(); onNavigate("history"); }}
+            >
+              <HistoryIcon />
+              Storico
+            </button>
             <button className="menu-item-btn" onClick={handleLogout}>
               <LogoutIcon />
               Esci
