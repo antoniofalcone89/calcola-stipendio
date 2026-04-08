@@ -37,6 +37,14 @@ jobs:
       - name: Build dell'app
         run: CI=false npm run build
 
+      - name: Pulizia build precedente sul VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: rm -rf /var/www/calcola-stipendio/*
+
       - name: Copia file su VPS via SCP
         uses: appleboy/scp-action@master
         with:
@@ -46,3 +54,4 @@ jobs:
           source: "build/*"
           target: "/var/www/calcola-stipendio"
           strip_components: 1
+          overwrite: true
