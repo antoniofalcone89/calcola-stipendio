@@ -14,6 +14,8 @@ const WorkHoursInput = ({
   onHoursChange,
   error,
   onSave,
+  minDate,
+  maxDate,
 }) => {
   return (
     <Grid item xs={12} sm={6}>
@@ -24,6 +26,8 @@ const WorkHoursInput = ({
         value={selectedDate}
         onChange={(e) => onDateChange(e.target.value)}
         className="input-field"
+        min={minDate}
+        max={maxDate}
       />
       <TextField
         fullWidth
@@ -56,6 +60,8 @@ export default memo(WorkHoursInput, (prevProps, nextProps) => {
     prevProps.error === nextProps.error &&
     prevProps.onDateChange === nextProps.onDateChange &&
     prevProps.onHoursChange === nextProps.onHoursChange &&
-    prevProps.onSave === nextProps.onSave
+    prevProps.onSave === nextProps.onSave &&
+    prevProps.minDate === nextProps.minDate &&
+    prevProps.maxDate === nextProps.maxDate
   );
 });

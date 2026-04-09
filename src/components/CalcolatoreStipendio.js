@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Box, Grid } from "./ui/layout";
 import { Typography } from "./ui/data-display";
 import { Paper } from "./ui/surfaces";
-import { format } from "date-fns";
+import { format, startOfMonth, endOfMonth } from "date-fns";
 import { it } from "date-fns/locale";
 import { useWorkHoursForm, useEditDialog } from "../hooks/useWorkHoursForm";
 import HourlyRateInput from "./hourlyRate/HourlyRateInput";
@@ -67,12 +67,34 @@ const CalcolatoreStipendio = ({
     [],
   );
 
+  const currentMonthPrefix = useMemo(() => format(new Date(), "yyyy-MM"), []);
+  const currentMonthMin = useMemo(
+    () => format(startOfMonth(new Date()), "yyyy-MM-dd"),
+    [],
+  );
+  const currentMonthMax = useMemo(
+    () => format(endOfMonth(new Date()), "yyyy-MM-dd"),
+    [],
+  );
+
+  const oreLavorateMese = useMemo(
+    () =>
+      oreLavorate !== null
+        ? Object.fromEntries(
+            Object.entries(oreLavorate).filter(([date]) =>
+              date.startsWith(currentMonthPrefix),
+            ),
+          )
+        : null,
+    [oreLavorate, currentMonthPrefix],
+  );
+
   const totaleOre = useMemo(
     () =>
-      pagaOraria !== null && oreLavorate !== null
-        ? Object.values(oreLavorate).reduce((acc, ore) => acc + ore, 0)
+      pagaOraria !== null && oreLavorateMese !== null
+        ? Object.values(oreLavorateMese).reduce((acc, ore) => acc + ore, 0)
         : 0,
-    [pagaOraria, oreLavorate],
+    [pagaOraria, oreLavorateMese],
   );
 
   const totaleStipendio = useMemo(
@@ -236,6 +258,8 @@ const CalcolatoreStipendio = ({
             onHoursChange={setOreOggi}
             error={error}
             onSave={handleSave}
+            minDate={currentMonthMin}
+            maxDate={currentMonthMax}
           />
         </Grid>
       </Paper>
@@ -249,8 +273,8 @@ const CalcolatoreStipendio = ({
         }}
       >
         <SummaryTable
-          key={Object.keys(oreLavorate || {}).join(",")}
-          oreLavorate={oreLavorate}
+          key={Object.keys(oreLavorateMese || {}).join(",")}
+          oreLavorate={oreLavorateMese}
           onEdit={handleEdit}
           onDelete={handleSetDeleteDate}
           onDeleteAll={handleShowDeleteAllDialog}
