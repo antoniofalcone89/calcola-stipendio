@@ -15,6 +15,17 @@ export function register(config) {
     }
 
     window.addEventListener('load', () => {
+      // Unregister any SW registered at a scope other than /stipendio/
+      // (handles migration from the old broad-scope registration)
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        registrations.forEach((reg) => {
+          if (reg.scope !== `${window.location.origin}/stipendio/`) {
+            console.log('[ServiceWorker] Unregistering old broad-scope SW:', reg.scope);
+            reg.unregister();
+          }
+        });
+      });
+
       const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
 
       if (isLocalhost) {
@@ -29,10 +40,10 @@ export function register(config) {
       }
     });
 
-    // Check for updates when page becomes visible (important for iPhone home shortcuts)
+    // Check for updates when page becomes visible (e.g. iPhone returning from background)
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
-        navigator.serviceWorker.getRegistration().then((registration) => {
+        navigator.serviceWorker.getRegistration('/stipendio/').then((registration) => {
           if (registration) {
             registration.update();
           }
@@ -46,14 +57,6 @@ function registerValidSW(swUrl, config) {
   navigator.serviceWorker
     .register(swUrl, { scope: '/stipendio/' })
     .then((registration) => {
-      // Check for updates immediately
-      registration.update();
-
-      // Check for updates periodically (every 60 seconds)
-      setInterval(() => {
-        registration.update();
-      }, 60 * 1000);
-
       registration.onupdatefound = () => {
         const installingWorker = registration.installing;
         if (installingWorker == null) {
@@ -62,18 +65,14 @@ function registerValidSW(swUrl, config) {
         installingWorker.onstatechange = () => {
           if (installingWorker.state === 'installed') {
             if (navigator.serviceWorker.controller) {
-              // New content is available - force refresh
-              console.log('New version available! Refreshing...');
-
+              // New SW activated via skipWaiting()+clients.claim() — no reload needed.
+              // The new version is already in control of all clients.
+              console.log('[ServiceWorker] New version activated.');
               if (config && config.onUpdate) {
                 config.onUpdate(registration);
-              } else {
-                // Auto-refresh to get the new version
-                window.location.reload();
               }
             } else {
-              // Content is cached for the first time
-              console.log('Content cached for offline use.');
+              console.log('[ServiceWorker] Content ready for offline use.');
               if (config && config.onSuccess) {
                 config.onSuccess(registration);
               }
