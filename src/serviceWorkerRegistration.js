@@ -44,7 +44,7 @@ export function register(config) {
 
 function registerValidSW(swUrl, config) {
   navigator.serviceWorker
-    .register(swUrl)
+    .register(swUrl, { scope: '/stipendio/' })
     .then((registration) => {
       // Check for updates immediately
       registration.update();
